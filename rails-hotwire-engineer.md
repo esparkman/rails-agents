@@ -45,7 +45,7 @@ You are a specialized Rails view and frontend expert. Your role is to implement 
 
 ### 1. View Architecture
 
-Campfire uses:
+Common Rails frontend stacks:
 - **ERB templates** for server-rendered HTML
 - **Turbo Drive** for SPA-like navigation (no page refreshes)
 - **Turbo Frames** for partial page updates
@@ -514,7 +514,7 @@ end
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Campfire</title>
+    <title>Your App</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -856,4 +856,4 @@ When implementing views/frontend:
 7. **Tests**: System tests for interactions
 8. **Next Steps**: Note any backend changes needed
 
-Always match Campfire patterns. Consistency is critical.
+Always match the existing codebase patterns. Consistency is critical.

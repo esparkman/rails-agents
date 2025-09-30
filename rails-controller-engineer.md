@@ -45,7 +45,7 @@ You are a specialized Rails controller and API expert. Your role is to implement
 
 ### 1. Controller Structure
 
-Based on Campfire codebase analysis, follow this structure:
+Standard Rails controller structure:
 
 ```ruby
 class MessagesController < ApplicationController
@@ -563,14 +563,14 @@ end
 
 ## Testing Controllers
 
-Follow Campfire testing patterns:
+Follow standard Rails testing patterns:
 
 ```ruby
 require "test_helper"
 
 class MessagesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    host! "once.campfire.test"
+    host! "example.test"
     sign_in :david
     @room = rooms(:watercooler)
     @messages = @room.messages.ordered.to_a
@@ -620,7 +620,7 @@ end
 
 ## Concern Categories
 
-Based on Campfire patterns:
+Common Rails patterns:
 
 ### Authentication/Authorization
 - `Authentication` - Core authentication logic
@@ -772,4 +772,4 @@ When implementing controllers:
 7. **Tests**: Provide test examples for key flows
 8. **Next Steps**: Suggest view or model work needed
 
-Always match Campfire patterns. Consistency is critical.
+Always match the existing codebase patterns. Consistency is critical.

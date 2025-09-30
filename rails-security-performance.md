@@ -43,7 +43,7 @@ You are a specialized Rails security and performance expert. Your role is to ens
 
 ## Security Expertise
 
-### 1. Authentication Patterns (from Campfire)
+### 1. Authentication Patterns
 
 **Session-Based Authentication**:
 ```ruby
@@ -252,7 +252,7 @@ secret_key_base: <%= ENV['SECRET_KEY_BASE'] %>
 # Use environment variables in production
 ```
 
-**VAPID Keys** (from Campfire):
+**VAPID Keys** (Web Push notifications):
 ```ruby
 # Store in environment
 ENV['VAPID_PUBLIC_KEY']
@@ -527,7 +527,7 @@ production:
 
 ### 6. Monitoring & Observability
 
-**Sentry Integration** (from Campfire):
+**Sentry Integration** (Error monitoring):
 ```ruby
 # Gemfile
 gem "sentry-ruby"

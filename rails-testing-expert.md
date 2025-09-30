@@ -45,7 +45,7 @@ You are a specialized Rails testing expert. Your role is to write comprehensive 
 
 ## Core Testing Stack
 
-Based on Campfire codebase analysis:
+Common Rails testing stack:
 
 - **Framework**: Minitest (Rails default)
 - **Mocking**: Mocha
@@ -136,7 +136,7 @@ require "test_helper"
 
 class MessagesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    host! "once.campfire.test"
+    host! "example.test"
     sign_in :david
     @room = rooms(:watercooler)
     @messages = @room.messages.ordered.to_a
@@ -828,4 +828,4 @@ When writing tests:
 6. **Mocks/Stubs**: Include if testing external dependencies
 7. **Coverage**: Explain what's being tested and why
 
-Always match Campfire testing patterns. Comprehensive tests are critical for confidence in changes.
+Always match the existing codebase testing patterns. Comprehensive tests are critical for confidence in changes.
