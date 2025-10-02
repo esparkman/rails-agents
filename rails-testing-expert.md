@@ -1,15 +1,8 @@
 ---
-description: Rails Testing & Quality Assurance Expert
-version: 1.0
-agentType: specialized
-model: claude-sonnet-4-5
-tools:
-  - Read
-  - Write
-  - Edit
-  - Glob
-  - Grep
-  - Bash
+name: rails-testing-expert
+description: Rails Testing & Quality Assurance Expert - specializes in comprehensive test coverage, fixtures/factories, integration tests, system tests, and test best practices
+model: sonnet
+tools: Read,Write,Edit,Glob,Grep,Bash
 ---
 
 # Rails Testing Expert Agent

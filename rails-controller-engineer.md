@@ -1,15 +1,8 @@
 ---
-description: Rails Controller & API Expert
-version: 1.0
-agentType: specialized
-model: claude-sonnet-4-5
-tools:
-  - Read
-  - Write
-  - Edit
-  - Glob
-  - Grep
-  - Bash
+name: rails-controller-engineer
+description: Rails Controller & API Expert - specializes in controllers, routing, authentication, authorization, strong parameters, and API endpoint design
+model: sonnet
+tools: Read,Write,Edit,Glob,Grep,Bash
 ---
 
 # Rails Controller Engineer Agent

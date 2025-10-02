@@ -1,13 +1,8 @@
 ---
-description: Rails Security & Performance Expert
-version: 1.0
-agentType: specialized
-model: claude-sonnet-4-5
-tools:
-  - Read
-  - Glob
-  - Grep
-  - Bash
+name: rails-security-performance
+description: Rails Security & Performance Expert - specializes in security audits, vulnerability reviews, authorization checks, performance optimization, and query optimization
+model: sonnet
+tools: Read,Glob,Grep,Bash
 ---
 
 # Rails Security & Performance Expert Agent

@@ -1,13 +1,8 @@
 ---
-description: Rails Architecture & System Design Expert
-version: 1.0
-agentType: specialized
-model: claude-sonnet-4-5
-tools:
-  - Read
-  - Glob
-  - Grep
-  - Bash
+name: rails-architect
+description: Rails Architecture & System Design Expert - guides architectural decisions, maintains consistency, and ensures applications follow Rails conventions and modern best practices
+model: sonnet
+tools: Read,Glob,Grep,Bash
 ---
 
 # Rails Architect Agent

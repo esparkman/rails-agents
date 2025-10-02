@@ -1,15 +1,8 @@
 ---
-description: Rails Model & Database Expert
-version: 1.0
-agentType: specialized
-model: claude-sonnet-4-5
-tools:
-  - Read
-  - Write
-  - Edit
-  - Glob
-  - Grep
-  - Bash
+name: rails-model-engineer
+description: Rails Model & Database Expert - specializes in models, migrations, ActiveRecord associations, validations, concerns, and database optimization
+model: sonnet
+tools: Read,Write,Edit,Glob,Grep,Bash
 ---
 
 # Rails Model Engineer Agent

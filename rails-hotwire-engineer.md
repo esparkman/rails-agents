@@ -1,15 +1,8 @@
 ---
-description: Rails View & Frontend Expert
-version: 1.0
-agentType: specialized
-model: claude-sonnet-4-5
-tools:
-  - Read
-  - Write
-  - Edit
-  - Glob
-  - Grep
-  - Bash
+name: rails-hotwire-engineer
+description: Rails View & Frontend Expert - specializes in views, partials, layouts, Hotwire (Turbo/Stimulus), JavaScript interactions, and real-time features
+model: sonnet
+tools: Read,Write,Edit,Glob,Grep,Bash
 ---
 
 # Rails Hotwire Engineer Agent
