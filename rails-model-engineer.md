@@ -538,6 +538,351 @@ class Order < ApplicationRecord
 end
 ```
 
+## Advanced Patterns
+
+### Multi-Tenancy via Default Associations
+
+Chain account through parent associations automatically:
+
+```ruby
+class Card < ApplicationRecord
+  # Account derived from parent - ensures data isolation
+  belongs_to :account, default: -> { board.account }
+  belongs_to :board
+  belongs_to :creator, class_name: "User", default: -> { Current.user }
+end
+
+class Comment < ApplicationRecord
+  belongs_to :account, default: -> { card.account }
+  belongs_to :card, touch: true
+  belongs_to :creator, class_name: "User", default: -> { Current.user }
+end
+
+# Every model includes account_id for tenant isolation
+# Queries automatically scoped through user's accessible records
+```
+
+### State via Has-One Models (Rich State Pattern)
+
+Instead of enums, use has_one associations for richer state with metadata:
+
+```ruby
+class Card < ApplicationRecord
+  # Rich state models instead of enums
+  has_one :closure, dependent: :destroy
+  has_one :not_now, dependent: :destroy, class_name: "Card::NotNow"
+  has_one :goldness, dependent: :destroy, class_name: "Card::Goldness"
+
+  # State query scopes
+  scope :closed, -> { joins(:closure) }
+  scope :open, -> { where.missing(:closure) }
+  scope :postponed, -> { open.joins(:not_now) }
+  scope :active, -> { open.where.missing(:not_now) }
+  scope :golden, -> { joins(:goldness) }
+
+  def closed?
+    closure.present?
+  end
+
+  def close(user: Current.user)
+    transaction do
+      create_closure!(user: user)
+      track_event :closed, creator: user
+    end
+  end
+
+  def reopen(user: Current.user)
+    transaction do
+      closure&.destroy
+      track_event :reopened, creator: user
+    end
+  end
+end
+
+# State model stores metadata
+class Card::Closure < ApplicationRecord
+  belongs_to :account, default: -> { card.account }
+  belongs_to :card, touch: true
+  belongs_to :user, optional: true  # Who closed it
+end
+```
+
+### Event-Driven Architecture
+
+Track domain events for activity feeds, notifications, and webhooks:
+
+```ruby
+# app/models/concerns/eventable.rb
+module Eventable
+  extend ActiveSupport::Concern
+
+  included do
+    has_many :events, as: :eventable, dependent: :destroy
+  end
+
+  def track_event(action, creator: Current.user, board: self.board, **particulars)
+    if should_track_event?
+      board.events.create!(
+        action: "#{eventable_prefix}_#{action}",
+        creator: creator,
+        eventable: self,
+        particulars: particulars
+      )
+    end
+  end
+
+  def event_was_created(event)
+    # Override in models to react to events
+  end
+
+  private
+    def should_track_event?
+      true
+    end
+
+    def eventable_prefix
+      self.class.name.demodulize.underscore
+    end
+end
+
+# Event model
+class Event < ApplicationRecord
+  belongs_to :account, default: -> { board.account }
+  belongs_to :board
+  belongs_to :creator, class_name: "User"
+  belongs_to :eventable, polymorphic: true
+
+  has_many :webhook_deliveries, dependent: :delete_all
+
+  after_create -> { eventable.event_was_created(self) }
+  after_create_commit :dispatch_webhooks
+
+  # Store extra event data
+  store_accessor :particulars, :assignee_ids, :old_title, :new_title
+end
+```
+
+### Concern Composition with Template Methods
+
+Override base concern behavior in model-specific concerns:
+
+```ruby
+# Base concern provides interface
+module Mentions
+  extend ActiveSupport::Concern
+
+  included do
+    has_many :mentions, as: :source, dependent: :destroy
+    after_save_commit :create_mentions_later, if: :should_create_mentions?
+  end
+
+  def mentionable_content
+    rich_text_associations.collect { send(it.name)&.to_plain_text }.join(" ")
+  end
+
+  private
+    def mentionable?
+      true  # Override in including class
+    end
+
+    def should_check_mentions?
+      false  # Override in including class
+    end
+end
+
+# Model-specific concern extends base
+module Card::Mentions
+  include ::Mentions
+
+  included do
+    def mentionable?
+      published?  # Only published cards track mentions
+    end
+
+    def should_check_mentions?
+      was_just_published?  # Check on state transition
+    end
+  end
+end
+```
+
+### UUID Primary Keys (UUIDv7 with Base36)
+
+Time-sortable UUIDs with compact string representation:
+
+```ruby
+# Migration with UUID primary key
+class CreateCards < ActiveRecord::Migration[8.0]
+  def change
+    create_table :cards, id: :uuid do |t|
+      t.references :account, type: :uuid, null: false, foreign_key: true
+      t.references :board, type: :uuid, null: false, foreign_key: true
+      t.string :title, null: false
+      t.timestamps
+    end
+  end
+end
+
+# UUID type registration (lib/rails_ext/active_record_uuid_type.rb)
+module ActiveRecord
+  module Type
+    class Uuid < Binary
+      BASE36_LENGTH = 25  # 36^25 > 2^128
+
+      def self.generate
+        uuid = SecureRandom.uuid_v7
+        hex = uuid.delete("-")
+        normalize_base36(hex.to_i(16))
+      end
+
+      def self.normalize_base36(integer)
+        integer.to_s(36).rjust(BASE36_LENGTH, "0")
+      end
+    end
+  end
+end
+```
+
+### Sharded Search Implementation
+
+Shard search records by account for scalability:
+
+```ruby
+# app/models/concerns/searchable.rb
+module Searchable
+  extend ActiveSupport::Concern
+
+  included do
+    after_create_commit :create_in_search_index
+    after_update_commit :update_in_search_index
+    after_destroy_commit :remove_from_search_index
+  end
+
+  private
+    def create_in_search_index
+      search_record_class.create!(search_record_attributes)
+    end
+
+    def update_in_search_index
+      search_record_class.upsert!(search_record_attributes)
+    end
+
+    def search_record_class
+      Search::Record.for(account_id)  # Returns sharded class
+    end
+
+    def search_record_attributes
+      {
+        account_id: account_id,
+        searchable_type: self.class.name,
+        searchable_id: id,
+        title: search_title,
+        content: search_content
+      }
+    end
+end
+
+# Sharded search (16 shards based on account CRC32)
+class Search::Record < ApplicationRecord
+  SHARD_COUNT = 16
+
+  def self.for(account_id)
+    shard_id = Zlib.crc32(account_id.to_s) % SHARD_COUNT
+    SHARD_CLASSES[shard_id]
+  end
+end
+```
+
+### Access Control with Association Cleanup
+
+Manage board-level access and clean up inaccessible data:
+
+```ruby
+module Board::Accessible
+  extend ActiveSupport::Concern
+
+  included do
+    has_many :accesses, dependent: :delete_all do
+      def grant_to(users)
+        Access.insert_all Array(users).collect { |user|
+          { id: ActiveRecord::Type::Uuid.generate, board_id: proxy_association.owner.id,
+            user_id: user.id, account_id: proxy_association.owner.account.id }
+        }
+      end
+
+      def revoke_from(users)
+        where(user: users).destroy_all
+      end
+    end
+
+    has_many :users, through: :accesses
+    after_save_commit :clean_inaccessible_data
+  end
+
+  def accessible_to?(user)
+    all_access? || accesses.exists?(user: user)
+  end
+
+  def clean_inaccessible_data_for(user)
+    return if accessible_to?(user)
+    mentions_for_user(user).destroy_all
+    notifications_for_user(user).destroy_all
+  end
+end
+```
+
+### Preloaded Scope Pattern
+
+Define comprehensive preload scopes for efficient loading:
+
+```ruby
+class Card < ApplicationRecord
+  scope :preloaded, -> {
+    with_users
+      .preload(:column, :tags, :steps, :closure, :goldness, :activity_spike,
+               :image_attachment, board: [:entropy, :columns], not_now: [:user])
+      .with_rich_text_description_and_embeds
+  }
+
+  scope :with_users, -> {
+    preload(creator: [:avatar_attachment, :account],
+            assignees: [:avatar_attachment, :account])
+  }
+end
+
+# Usage in controllers
+@cards = @board.cards.active.preloaded.latest
+```
+
+### Dynamic Scope Selection
+
+Use case statements for flexible querying:
+
+```ruby
+class Card < ApplicationRecord
+  scope :indexed_by, ->(index) do
+    case index
+    when "stalled" then stalled
+    when "postponing_soon" then postponing_soon
+    when "closed" then closed
+    when "not_now" then postponed.latest
+    when "golden" then golden
+    when "draft" then drafted
+    else all
+    end
+  end
+
+  scope :sorted_by, ->(sort) do
+    case sort
+    when "newest" then reverse_chronologically
+    when "oldest" then chronologically
+    when "latest" then latest
+    else latest
+    end
+  end
+end
+```
+
 ## Integration with Other Agents
 
 - **@rails-architect**: Get guidance on data modeling and relationships

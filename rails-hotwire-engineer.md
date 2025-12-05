@@ -810,6 +810,599 @@ end
 - Ignore progressive enhancement
 - Over-rely on JavaScript when HTML works
 
+## Advanced Stimulus Patterns
+
+### Outlet-Based Controller Communication
+
+Connect controllers that need to communicate:
+
+```javascript
+// app/javascript/controllers/composer_controller.js
+export default class extends Controller {
+  static outlets = ["auto-save", "messages"]  // Connect to other controllers
+
+  submit(event) {
+    event.preventDefault()
+    this.#submitMessage()
+  }
+
+  submitEnd(event) {
+    if (!event.detail.success) {
+      // Communicate with messages controller via outlet
+      this.messagesOutlet.failPendingMessage(this.clientidTarget.value)
+    }
+  }
+
+  change(event) {
+    // Delegate to auto-save controller
+    this.autoSaveOutlet.change(event)
+  }
+}
+```
+
+```erb
+<%# Connect outlets via data attributes %>
+<div data-controller="composer"
+     data-composer-auto-save-outlet="#auto-save-form"
+     data-composer-messages-outlet="#messages-container">
+  <!-- Form content -->
+</div>
+
+<div id="auto-save-form" data-controller="auto-save">
+  <!-- Auto-save form -->
+</div>
+
+<div id="messages-container" data-controller="messages">
+  <!-- Messages list -->
+</div>
+```
+
+### Values with Type Coercion
+
+Use typed values for data attributes:
+
+```javascript
+export default class extends Controller {
+  static values = {
+    roomId: Number,                              // Coerced to number
+    modal: { type: Boolean, default: false },    // With default
+    reloadInterval: { type: Number, default: 600 },
+    board: String,
+    sizing: { type: Boolean, default: true }
+  }
+
+  connect() {
+    if (this.modalValue) {
+      this.#openModal()
+    }
+
+    // Auto-reload based on interval
+    this.#timer = setInterval(() => this.reload(), this.reloadIntervalValue * 1000)
+  }
+
+  disconnect() {
+    clearInterval(this.#timer)
+  }
+}
+```
+
+```erb
+<div data-controller="dialog"
+     data-dialog-modal-value="true"
+     data-dialog-sizing-value="false"
+     data-dialog-reload-interval-value="300">
+</div>
+```
+
+### CSS Classes Configuration
+
+Externalize CSS class names:
+
+```javascript
+export default class extends Controller {
+  static classes = ["collapsed", "noTransitions", "titleNotVisible", "draggedItem"]
+
+  toggle() {
+    this.element.classList.toggle(this.collapsedClass)
+  }
+
+  dragStart(event) {
+    this.dragItem.classList.add(this.draggedItemClass)
+  }
+}
+```
+
+```erb
+<div data-controller="collapsible"
+     data-collapsible-collapsed-class="column--collapsed"
+     data-collapsible-no-transitions-class="column--no-transitions"
+     data-collapsible-title-not-visible-class="column--title-hidden">
+</div>
+```
+
+### Auto-Save Controller Pattern
+
+Debounced auto-saving with lifecycle handling:
+
+```javascript
+const AUTOSAVE_INTERVAL = 3000
+
+export default class extends Controller {
+  #timer
+
+  disconnect() {
+    this.submit()  // Save on disconnect
+  }
+
+  change(event) {
+    if (event.target.form === this.element && !this.#dirty) {
+      this.#scheduleSave()
+    }
+  }
+
+  submit() {
+    this.#resetTimer()
+    submitForm(this.element)
+  }
+
+  #scheduleSave() {
+    this.#timer = setTimeout(() => this.#save(), AUTOSAVE_INTERVAL)
+  }
+
+  #save() {
+    this.#resetTimer()
+    submitForm(this.element)
+  }
+
+  #resetTimer() {
+    clearTimeout(this.#timer)
+    this.#timer = null
+  }
+
+  get #dirty() {
+    return !!this.#timer
+  }
+}
+```
+
+### Local Storage Persistence
+
+Save drafts to localStorage:
+
+```javascript
+export default class extends Controller {
+  static targets = ["input"]
+  static values = { key: String }
+
+  initialize() {
+    this.save = debounce(this.save.bind(this), 300)
+  }
+
+  connect() {
+    this.restoreContent()
+  }
+
+  submit({ detail: { success } }) {
+    if (success) {
+      this.#clear()
+    }
+  }
+
+  save() {
+    const content = this.inputTarget.value
+    if (content) {
+      localStorage.setItem(this.keyValue, content)
+    } else {
+      this.#clear()
+    }
+  }
+
+  restoreContent() {
+    const savedContent = localStorage.getItem(this.keyValue)
+    if (savedContent) {
+      this.inputTarget.value = savedContent
+      this.#triggerChangeEvent()
+    }
+  }
+
+  #clear() {
+    localStorage.removeItem(this.keyValue)
+  }
+
+  #triggerChangeEvent() {
+    this.inputTarget.dispatchEvent(new Event("change", { bubbles: true }))
+  }
+}
+```
+
+### Navigable List Controller
+
+Keyboard navigation for lists:
+
+```javascript
+export default class extends Controller {
+  static targets = ["item", "input"]
+  static values = {
+    selectionAttribute: { type: String, default: "aria-selected" },
+    autoSelect: { type: Boolean, default: true },
+    autoScroll: { type: Boolean, default: true }
+  }
+
+  navigate(event) {
+    this.#keyHandlers[event.key]?.call(this, event)
+  }
+
+  async selectItem(item) {
+    this.#clearSelection()
+    item.setAttribute(this.selectionAttributeValue, "true")
+    this.currentItem = item
+
+    await nextFrame()
+    if (this.autoScrollValue) {
+      this.currentItem.scrollIntoView({ block: "nearest" })
+    }
+  }
+
+  #keyHandlers = {
+    ArrowDown(event) {
+      event.preventDefault()
+      this.#selectNext()
+    },
+    ArrowUp(event) {
+      event.preventDefault()
+      this.#selectPrevious()
+    },
+    Enter(event) {
+      this.#clickCurrentItem(event)
+    }
+  }
+
+  #selectNext() {
+    const items = this.itemTargets
+    const currentIndex = items.indexOf(this.currentItem)
+    const nextIndex = Math.min(currentIndex + 1, items.length - 1)
+    this.selectItem(items[nextIndex])
+  }
+
+  #selectPrevious() {
+    const items = this.itemTargets
+    const currentIndex = items.indexOf(this.currentItem)
+    const prevIndex = Math.max(currentIndex - 1, 0)
+    this.selectItem(items[prevIndex])
+  }
+}
+```
+
+### Drag and Drop Controller
+
+Complex drag-and-drop with visual feedback:
+
+```javascript
+export default class extends Controller {
+  static targets = ["item", "container"]
+  static classes = ["draggedItem", "hoverContainer"]
+
+  async dragStart(event) {
+    event.dataTransfer.effectAllowed = "move"
+
+    await nextFrame()
+    this.dragItem = this.#itemContaining(event.target)
+    this.sourceContainer = this.#containerContaining(this.dragItem)
+    this.dragItem.classList.add(this.draggedItemClass)
+  }
+
+  dragOver(event) {
+    event.preventDefault()
+    if (!this.dragItem) return
+
+    const container = this.#containerContaining(event.target)
+    this.#clearContainerHoverClasses()
+
+    if (container && container !== this.sourceContainer) {
+      container.classList.add(this.hoverContainerClass)
+    }
+  }
+
+  async drop(event) {
+    const targetContainer = this.#containerContaining(event.target)
+    if (!targetContainer || targetContainer === this.sourceContainer) return
+
+    this.#insertDraggedItem(targetContainer, this.dragItem)
+    await this.#submitDropRequest(this.dragItem, targetContainer)
+    this.#reloadSourceFrame(this.sourceContainer)
+  }
+
+  dragEnd() {
+    this.dragItem?.classList.remove(this.draggedItemClass)
+    this.#clearContainerHoverClasses()
+    this.dragItem = null
+  }
+
+  #submitDropRequest(item, container) {
+    const url = container.dataset.dragAndDropUrl.replaceAll("__id__", item.dataset.id)
+    return post(url, { responseKind: "turbo-stream" })
+  }
+}
+```
+
+### IntersectionObserver for Performance
+
+Lazy loading and visibility detection:
+
+```javascript
+export default class extends Controller {
+  static targets = ["column", "title"]
+  static classes = ["titleNotVisible"]
+
+  connect() {
+    this.#setupIntersectionObserver()
+  }
+
+  disconnect() {
+    this._intersectionObserver?.disconnect()
+  }
+
+  #setupIntersectionObserver() {
+    this._intersectionObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        const title = entry.target
+        const column = title.closest(".cards")
+        if (!column) return
+
+        const offscreen = entry.intersectionRatio === 0
+        column.classList.toggle(this.titleNotVisibleClass, offscreen)
+      })
+    }, { threshold: [0] })
+
+    this.titleTargets.forEach(title => this._intersectionObserver.observe(title))
+  }
+}
+```
+
+### Multi-Selection Combobox
+
+Complex multi-select with hidden fields:
+
+```javascript
+export default class extends Controller {
+  static targets = ["label", "item", "hiddenFieldTemplate"]
+  static values = {
+    selectPropertyName: { type: String, default: "aria-checked" },
+    noSelectionLabel: { type: String, default: "No selection" },
+    labelPrefix: String
+  }
+
+  change(event) {
+    const item = event.target.closest("[role='checkbox']")
+    if (item) {
+      this.#toggleSelection(item)
+    }
+  }
+
+  #toggleSelection(item) {
+    const isSelected = item.getAttribute(this.selectPropertyNameValue) === "true"
+    item.setAttribute(this.selectPropertyNameValue, isSelected ? "false" : "true")
+    this.#updateHiddenFields()
+    this.labelTarget.textContent = this.#selectedLabel
+  }
+
+  #updateHiddenFields() {
+    this.#clearHiddenFields()
+    this.#selectedValues().forEach(value => {
+      const [field] = this.hiddenFieldTemplateTarget.content.cloneNode(true).children
+      field.value = value
+      this.element.appendChild(field)
+    })
+  }
+
+  #selectedValues() {
+    return this.itemTargets
+      .filter(item => item.getAttribute(this.selectPropertyNameValue) === "true")
+      .map(item => item.dataset.multiSelectionComboboxValue)
+  }
+
+  get #selectedLabel() {
+    const count = this.#selectedValues().length
+    if (count === 0) return this.noSelectionLabelValue
+    if (count === 1) return this.#firstSelectedLabel
+    return `${this.labelPrefixValue} (${count})`
+  }
+}
+```
+
+### Dialog Controller
+
+Modal and non-modal dialogs:
+
+```javascript
+export default class extends Controller {
+  static targets = ["dialog"]
+  static values = {
+    modal: { type: Boolean, default: false },
+    sizing: { type: Boolean, default: true }
+  }
+
+  connect() {
+    this.dialogTarget.setAttribute("aria-hidden", "true")
+  }
+
+  open() {
+    if (this.modalValue) {
+      this.dialogTarget.showModal()
+    } else {
+      this.dialogTarget.show()
+      this.#orient()
+    }
+
+    this.#loadLazyFrames()
+    this.dialogTarget.setAttribute("aria-hidden", "false")
+    this.dispatch("show")
+  }
+
+  close() {
+    this.dialogTarget.close()
+    this.dialogTarget.setAttribute("aria-hidden", "true")
+    this.dispatch("close")
+  }
+
+  closeOnClickOutside(event) {
+    if (!this.element.contains(event.target)) {
+      this.close()
+    }
+  }
+
+  #loadLazyFrames() {
+    this.dialogTarget.querySelectorAll("turbo-frame").forEach(frame => {
+      frame.loading = "eager"
+    })
+  }
+
+  #orient() {
+    // Position dialog relative to viewport
+    const rect = this.dialogTarget.getBoundingClientRect()
+    if (rect.right > window.innerWidth) {
+      this.dialogTarget.classList.add("orient-left")
+    }
+  }
+}
+```
+
+## JavaScript Helper Patterns
+
+### Timing Helpers
+
+```javascript
+// app/javascript/helpers/timing_helpers.js
+export function debounce(fn, delay = 300) {
+  let timeoutId = null
+  return (...args) => {
+    clearTimeout(timeoutId)
+    timeoutId = setTimeout(() => fn.apply(this, args), delay)
+  }
+}
+
+export function throttle(fn, delay = 1000) {
+  let timeoutId = null
+  return (...args) => {
+    if (!timeoutId) {
+      fn(...args)
+      timeoutId = setTimeout(() => timeoutId = null, delay)
+    }
+  }
+}
+
+export function nextFrame() {
+  return new Promise(requestAnimationFrame)
+}
+
+export function nextEvent(element, eventName) {
+  return new Promise(resolve =>
+    element.addEventListener(eventName, resolve, { once: true })
+  )
+}
+```
+
+### Scroll Helpers
+
+```javascript
+// app/javascript/helpers/scroll_helpers.js
+export async function keepingScrollPosition(element, promise) {
+  const originalPosition = element.getBoundingClientRect()
+  await promise
+  const currentPosition = element.getBoundingClientRect()
+  const yDiff = currentPosition.top - originalPosition.top
+  findNearestScrollableAncestor(element).scrollTop += yDiff
+}
+
+export function isScrolledToBottom(element, threshold = 100) {
+  return (element.scrollHeight - element.scrollTop - element.clientHeight) < threshold
+}
+```
+
+### Text Filtering Helpers
+
+```javascript
+// app/javascript/helpers/text_helpers.js
+export function normalizeFilteredText(string) {
+  return string
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")  // Remove diacritics
+}
+
+export function filterMatches(text, potentialMatch) {
+  return normalizeFilteredText(text).includes(normalizeFilteredText(potentialMatch))
+}
+```
+
+## Complex View Patterns
+
+### Multi-Controller Form
+
+```erb
+<%= form_with model: @card, id: dom_id(@card, :edit_form),
+      data: {
+        controller: "autoresize form local-save auto-save",
+        local_save_key_value: "card-#{@card.id}",
+        action: [
+          "turbo:submit-end->local-save#submit",
+          "turbo:submit-end->auto-save#submitEnd"
+        ].join(" ")
+      } do |form| %>
+
+  <%= form.rich_textarea :description,
+        data: {
+          local_save_target: "input",
+          action: [
+            "lexxy:change->local-save#save",
+            "turbo:morph-element->local-save#restoreContent",
+            "keydown.ctrl+enter->form#submit:prevent"
+          ].join(" ")
+        } %>
+
+  <%= form.submit "Save", data: { form_target: "submit" } %>
+<% end %>
+```
+
+### Filter Settings with Multiple Controllers
+
+```erb
+<%= tag.aside data: {
+      controller: "toggle-enable toggle-class filter-settings dialog-manager",
+      toggle_class_toggle_class: "filters--expanded",
+      filter_settings_filters_set_class: "filters--has-filters-set",
+      filter_settings_refresh_url_value: settings_refresh_path,
+      turbo_permanent: true
+    } do %>
+
+  <%= form_with url: filter_url, method: :get,
+        data: {
+          controller: "form",
+          turbo_frame: "cards_container",
+          filter_settings_target: "form",
+          action: "turbo:submit-end->filter-settings#resetIfNoFiltering",
+          turbo_action: "advance"
+        } do |form| %>
+    <!-- Filter fields -->
+  <% end %>
+<% end %>
+```
+
+### Pagination with Scroll Preservation
+
+```erb
+<%= turbo_frame_tag :cards_container do %>
+  <section class="cards cards--grid"
+           data-controller="pagination"
+           data-pagination-discard-frame-value="true">
+
+    <%= with_automatic_pagination :cards_paginated_container, @page do %>
+      <%= render "cards/display/previews", cards: @page.records %>
+    <% end %>
+
+  </section>
+<% end %>
+```
+
 ## Integration with Other Agents
 
 - **@rails-architect**: Consult for frontend architecture decisions

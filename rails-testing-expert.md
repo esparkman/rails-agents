@@ -809,6 +809,567 @@ PARALLEL_WORKERS=1 rails test
 - Use proper waiting mechanisms
 - Remove or fix broken tests immediately
 
+## Advanced Testing Patterns
+
+### UUID Fixture Handling
+
+Generate deterministic UUIDs for fixtures that sort predictably:
+
+**Minitest:**
+```ruby
+# test/test_helper.rb
+module FixturesTestHelper
+  extend ActiveSupport::Concern
+
+  class_methods do
+    def identify(label, column_type = :integer)
+      if label.to_s.end_with?("_uuid")
+        column_type = :uuid
+        label = label.to_s.delete_suffix("_uuid")
+      end
+
+      return super(label, column_type) unless column_type.in?([:uuid, :string])
+      generate_fixture_uuid(label)
+    end
+
+    def generate_fixture_uuid(label)
+      # CRC32 for deterministic ordering
+      fixture_int = Zlib.crc32("fixtures/#{label}") % (2**30 - 1)
+
+      # Map to timestamp so new records are always newer
+      base_time = Time.utc(2024, 1, 1, 0, 0, 0)
+      timestamp = base_time + (fixture_int / 1000.0)
+
+      uuid_v7_with_timestamp(timestamp, label)
+    end
+
+    def uuid_v7_with_timestamp(timestamp, label)
+      # UUIDv7 implementation with base36 encoding
+      ms = (timestamp.to_f * 1000).to_i
+      rand_a = Zlib.crc32(label.to_s) % 4096
+
+      uuid_int = (ms << 80) | (0x7 << 76) | (rand_a << 62) |
+                 (0x2 << 60) | SecureRandom.random_number(2**60)
+
+      uuid_int.to_s(36).rjust(25, "0")
+    end
+  end
+end
+
+ActiveRecord::FixtureSet.prepend(FixturesTestHelper)
+```
+
+**RSpec:**
+```ruby
+# spec/support/uuid_fixtures.rb
+module UuidFixtureHelpers
+  def fixture_uuid(label)
+    fixture_int = Zlib.crc32("fixtures/#{label}") % (2**30 - 1)
+    base_time = Time.utc(2024, 1, 1, 0, 0, 0)
+    timestamp = base_time + (fixture_int / 1000.0)
+
+    ms = (timestamp.to_f * 1000).to_i
+    rand_a = Zlib.crc32(label.to_s) % 4096
+
+    uuid_int = (ms << 80) | (0x7 << 76) | (rand_a << 62) |
+               (0x2 << 60) | SecureRandom.random_number(2**60)
+
+    uuid_int.to_s(36).rjust(25, "0")
+  end
+end
+
+RSpec.configure do |config|
+  config.include UuidFixtureHelpers
+end
+```
+
+### Multi-Tenant Testing
+
+**Minitest:**
+```ruby
+# test/test_helper.rb
+class ActiveSupport::TestCase
+  setup do
+    Current.account = accounts("37s")
+  end
+
+  teardown do
+    Current.clear_all
+  end
+end
+
+class ActionDispatch::IntegrationTest
+  setup do
+    account = accounts("37s")
+    script_name = "/#{ActiveRecord::FixtureSet.identify('37signals')}"
+    default_url_options[:script_name] = script_name
+    Current.account = account
+  end
+end
+
+# Test helper for switching accounts
+module SessionTestHelper
+  def untenanted(&block)
+    original_script_name = integration_session.default_url_options[:script_name]
+    integration_session.default_url_options[:script_name] = ""
+    yield
+  ensure
+    integration_session.default_url_options[:script_name] = original_script_name
+  end
+
+  def with_current_user(user)
+    user = users(user) unless user.is_a?(User)
+    old_session = Current.session
+    Current.session = Session.new(identity: user.identity)
+    yield
+  ensure
+    Current.session = old_session
+  end
+end
+```
+
+**RSpec:**
+```ruby
+# spec/support/multi_tenant.rb
+RSpec.configure do |config|
+  config.before(:each) do
+    Current.account = Account.find_by(name: "Test Account") ||
+                      create(:account, name: "Test Account")
+  end
+
+  config.after(:each) do
+    Current.clear_all
+  end
+
+  config.before(:each, type: :request) do
+    account = Current.account
+    host! "#{account.external_account_id}.example.com"
+  end
+end
+
+module MultiTenantHelpers
+  def switch_to_account(account)
+    Current.account = account
+    host! "#{account.external_account_id}.example.com"
+  end
+
+  def untenanted
+    original_account = Current.account
+    Current.account = nil
+    yield
+  ensure
+    Current.account = original_account
+  end
+end
+
+RSpec.configure do |config|
+  config.include MultiTenantHelpers, type: :request
+end
+```
+
+### Turbo Stream Broadcast Testing
+
+**Minitest:**
+```ruby
+require "test_helper"
+
+class NotificationTest < ActiveSupport::TestCase
+  include Turbo::Broadcastable::TestHelper
+
+  test "unread broadcasts to notifications stream" do
+    notification = notifications(:logo_published_kevin)
+    notification.read  # Setup
+
+    assert_turbo_stream_broadcasts([notification.user, :notifications], count: 1) do
+      notification.unread
+    end
+  end
+
+  test "creating card broadcasts to board" do
+    board = boards(:writebook)
+
+    assert_turbo_stream_broadcasts([board, :cards]) do
+      board.cards.create!(
+        title: "New Card",
+        creator: users(:david),
+        status: :published
+      )
+    end
+  end
+end
+```
+
+**RSpec:**
+```ruby
+# spec/models/notification_spec.rb
+require "rails_helper"
+
+RSpec.describe Notification do
+  include Turbo::Broadcastable::TestHelper
+
+  describe "#unread" do
+    let(:notification) { create(:notification, :read) }
+
+    it "broadcasts to notifications stream" do
+      expect {
+        notification.unread
+      }.to broadcast_to([notification.user, :notifications])
+    end
+  end
+end
+
+# Custom matcher for RSpec
+RSpec::Matchers.define :broadcast_to do |stream|
+  supports_block_expectations
+
+  match do |block|
+    @before_count = broadcasts(stream).size
+    block.call
+    @after_count = broadcasts(stream).size
+    @after_count > @before_count
+  end
+
+  failure_message do
+    "expected block to broadcast to #{stream}"
+  end
+end
+```
+
+### VCR Integration for External APIs
+
+**Minitest:**
+```ruby
+# test/test_helper.rb
+require "vcr"
+
+VCR.configure do |config|
+  config.cassette_library_dir = "test/vcr_cassettes"
+  config.hook_into :webmock
+  config.ignore_localhost = true
+  config.filter_sensitive_data("<OPENAI_API_KEY>") { ENV["OPENAI_API_KEY"] }
+
+  # Custom matcher that ignores timestamps
+  config.register_request_matcher :body_without_timestamps do |request1, request2|
+    body1 = request1.body.gsub(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} UTC/, "")
+    body2 = request2.body.gsub(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} UTC/, "")
+    body1 == body2
+  end
+
+  config.default_cassette_options = {
+    match_requests_on: [:method, :uri, :body_without_timestamps]
+  }
+end
+
+# Test helper module
+module VcrTestHelper
+  extend ActiveSupport::Concern
+
+  included do
+    setup do
+      @cassette_name = "#{self.class.name.tableize.singularize}-#{name}"
+      VCR.insert_cassette(@cassette_name, record: recording? ? :all : :none)
+    end
+
+    teardown do
+      VCR.eject_cassette
+    end
+  end
+
+  def recording?
+    ENV["VCR_RECORD"].present?
+  end
+end
+```
+
+**RSpec:**
+```ruby
+# spec/support/vcr.rb
+require "vcr"
+
+VCR.configure do |config|
+  config.cassette_library_dir = "spec/vcr_cassettes"
+  config.hook_into :webmock
+  config.configure_rspec_metadata!
+  config.ignore_localhost = true
+  config.filter_sensitive_data("<API_KEY>") { ENV["API_KEY"] }
+
+  config.default_cassette_options = {
+    record: :new_episodes,
+    match_requests_on: [:method, :uri, :body]
+  }
+end
+
+RSpec.configure do |config|
+  config.around(:each, :vcr) do |example|
+    cassette_name = example.metadata[:full_description].parameterize
+    VCR.use_cassette(cassette_name) { example.run }
+  end
+end
+
+# Usage in specs
+RSpec.describe WebhookDelivery, :vcr do
+  it "delivers webhook" do
+    delivery = create(:webhook_delivery, :pending)
+    delivery.deliver
+    expect(delivery.state).to eq("completed")
+  end
+end
+```
+
+### Search Index Testing
+
+**Minitest:**
+```ruby
+# test/test_helpers/search_test_helper.rb
+module SearchTestHelper
+  extend ActiveSupport::Concern
+
+  included do
+    self.use_transactional_tests = false  # Search needs real DB commits
+
+    setup :setup_search_test
+    teardown :teardown_search_test
+  end
+
+  def setup_search_test
+    clear_search_records
+    @account = Account.create!(name: "Search Test")
+    Current.account = @account
+  end
+
+  def teardown_search_test
+    clear_search_records
+    @account&.destroy
+  end
+
+  private
+    def clear_search_records
+      Search::Record::SHARD_COUNT.times do |shard_id|
+        ActiveRecord::Base.connection.execute("DELETE FROM search_records_#{shard_id}")
+      end
+    end
+end
+
+class SearchTest < ActiveSupport::TestCase
+  include SearchTestHelper
+
+  test "card is indexed on create" do
+    card = Card.create!(
+      board: boards(:writebook),
+      title: "Searchable Card",
+      creator: users(:david)
+    )
+
+    results = Search::Record.search("Searchable", user: users(:david))
+    assert_includes results.map(&:card), card
+  end
+end
+```
+
+**RSpec:**
+```ruby
+# spec/support/search_helpers.rb
+module SearchHelpers
+  def clear_search_records
+    Search::Record::SHARD_COUNT.times do |shard_id|
+      ActiveRecord::Base.connection.execute("DELETE FROM search_records_#{shard_id}")
+    end
+  end
+end
+
+RSpec.configure do |config|
+  config.include SearchHelpers
+
+  config.around(:each, :search) do |example|
+    self.use_transactional_tests = false
+    clear_search_records
+    example.run
+    clear_search_records
+    self.use_transactional_tests = true
+  end
+end
+
+# Usage
+RSpec.describe Card, :search do
+  it "indexes on create" do
+    card = create(:card, title: "Searchable")
+    results = Search::Record.search("Searchable", user: card.creator)
+    expect(results.map(&:card)).to include(card)
+  end
+end
+```
+
+### Event-Driven Testing
+
+**Minitest:**
+```ruby
+class CardTest < ActiveSupport::TestCase
+  test "closing card creates event" do
+    card = cards(:logo)
+
+    assert_difference "Event.count", +1 do
+      card.close(user: users(:david))
+    end
+
+    event = Event.last
+    assert_equal "card_closed", event.action
+    assert_equal card, event.eventable
+    assert_equal users(:david), event.creator
+  end
+
+  test "assignment creates event with particulars" do
+    card = cards(:logo)
+
+    assert_difference "Event.count", +1 do
+      card.toggle_assignment(users(:kevin))
+    end
+
+    event = Event.last
+    assert_equal "card_assigned", event.action
+    assert_equal [users(:kevin).id], event.assignee_ids
+  end
+end
+```
+
+**RSpec:**
+```ruby
+RSpec.describe Card do
+  describe "#close" do
+    let(:card) { create(:card, :open) }
+    let(:user) { create(:user) }
+
+    it "creates a closed event" do
+      expect { card.close(user: user) }.to change(Event, :count).by(1)
+
+      event = Event.last
+      expect(event.action).to eq("card_closed")
+      expect(event.eventable).to eq(card)
+      expect(event.creator).to eq(user)
+    end
+  end
+
+  describe "#toggle_assignment" do
+    let(:card) { create(:card) }
+    let(:assignee) { create(:user) }
+
+    it "creates assignment event with particulars" do
+      expect { card.toggle_assignment(assignee) }.to change(Event, :count).by(1)
+
+      event = Event.last
+      expect(event.action).to eq("card_assigned")
+      expect(event.assignee_ids).to eq([assignee.id])
+    end
+  end
+end
+```
+
+### Factory Patterns (for RSpec)
+
+```ruby
+# spec/factories/cards.rb
+FactoryBot.define do
+  factory :card do
+    association :board
+    association :creator, factory: :user
+    association :account, factory: :account
+    sequence(:title) { |n| "Card #{n}" }
+    status { :published }
+
+    trait :draft do
+      status { :draft }
+    end
+
+    trait :closed do
+      after(:create) do |card|
+        create(:closure, card: card)
+      end
+    end
+
+    trait :golden do
+      after(:create) do |card|
+        create(:card_goldness, card: card)
+      end
+    end
+
+    trait :with_comments do
+      transient do
+        comments_count { 3 }
+      end
+
+      after(:create) do |card, evaluator|
+        create_list(:comment, evaluator.comments_count, card: card)
+      end
+    end
+
+    trait :assigned_to do
+      transient do
+        assignee { nil }
+      end
+
+      after(:create) do |card, evaluator|
+        create(:assignment, card: card, assignee: evaluator.assignee)
+      end
+    end
+  end
+end
+
+# Usage
+let(:card) { create(:card, :closed, :golden, :with_comments, comments_count: 5) }
+```
+
+### System Test Helpers
+
+**Minitest:**
+```ruby
+# test/application_system_test_case.rb
+class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
+  driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1000]
+
+  include SessionTestHelper
+
+  def sign_in_as(user)
+    user = users(user) if user.is_a?(Symbol)
+    visit new_session_url(script_name: "/#{user.account.external_account_id}")
+    fill_in "email_address", with: user.identity.email_address
+    click_on "Send magic link"
+
+    magic_link = user.identity.magic_links.last
+    visit session_magic_link_url(code: magic_link.code)
+  end
+
+  def fill_in_rich_text_area(locator, with:)
+    find("lexxy-editor[aria-label='#{locator}']").set(with)
+  end
+end
+```
+
+**RSpec:**
+```ruby
+# spec/support/system_helpers.rb
+module SystemHelpers
+  def sign_in_as(user)
+    visit new_session_path
+    fill_in "email_address", with: user.identity.email_address
+    click_on "Send magic link"
+
+    magic_link = user.identity.magic_links.last
+    visit session_magic_link_path(code: magic_link.code)
+  end
+
+  def fill_in_rich_text_area(locator, with:)
+    find("lexxy-editor[aria-label='#{locator}']").set(with)
+  end
+end
+
+RSpec.configure do |config|
+  config.include SystemHelpers, type: :system
+
+  config.before(:each, type: :system) do
+    driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1000]
+  end
+end
+```
+
 ## Response Format
 
 When writing tests:

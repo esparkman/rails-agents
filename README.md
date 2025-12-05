@@ -133,13 +133,71 @@ These agents form a **codebase-aware Rails development team** that:
 
 ---
 
+### ⚡ @rails-background-jobs
+**Background Jobs & Async Processing Specialist**
+
+**Model**: Claude Sonnet 4.5
+**Tools**: Read, Write, Edit, Glob, Grep, Bash
+
+**Responsibilities**:
+- Background job implementation (Solid Queue, Sidekiq, etc.)
+- Recurring/scheduled task setup
+- Job retry strategies and error handling
+- Queue configuration and prioritization
+- Multi-tenant job context preservation
+
+**Use When**:
+- Creating background jobs
+- Setting up recurring tasks
+- Implementing async processing
+- Configuring job queues and workers
+- Adding webhook delivery or notifications
+
+---
+
+### 🔐 @rails-authentication
+**Authentication & Identity Specialist**
+
+**Model**: Claude Sonnet 4.5
+**Tools**: Read, Write, Edit, Glob, Grep, Bash
+
+**Responsibilities**:
+- Passwordless/magic link authentication
+- Session management and security
+- Identity vs User model separation
+- OAuth integration
+- Rate limiting on auth endpoints
+
+**Use When**:
+- Implementing authentication systems
+- Setting up magic link login
+- Managing user sessions
+- Adding OAuth providers
+- Multi-tenant user/identity patterns
+
+---
+
 ## 🚀 How to Use
+
+### Claude Code Sub-Agents
+
+These agents are designed to work as **Claude Code sub-agents**. Claude Code looks for agent definitions in the `.claude/agents/` directory of your project.
+
+**How it works:**
+1. Place agent `.md` files in `.claude/agents/` (or a `commands/` directory)
+2. Reference agents using `@agent-name` syntax in Claude Code
+3. The agent's instructions, model, and tools are loaded automatically
+4. Each agent can analyze and work within your project context
 
 ### First Time Setup
 
 1. **Drop the agents into your Rails project**:
    ```bash
-   cp -r .claude/agents /path/to/your/rails/project/.claude/
+   # Create the agents directory if it doesn't exist
+   mkdir -p /path/to/your/rails/project/.claude/agents
+
+   # Copy all agent files
+   cp *.md /path/to/your/rails/project/.claude/agents/
    ```
 
 2. **On first use, each agent will**:
@@ -336,12 +394,166 @@ Each agent file contains:
 - **Integration guidelines** with other agents
 - **Anti-patterns** to avoid
 
-## 🔄 Updating Agents
+## 🔄 Updating & Customizing Agents
 
-As your codebase evolves:
-- Agents continue to learn from new code they read
-- They maintain consistency with established patterns
-- They can suggest improvements while respecting your conventions
+### Agent File Structure
+
+Each agent file follows this structure:
+
+```markdown
+---
+name: agent-name
+description: Brief description shown in Claude Code
+model: sonnet
+tools: Read,Write,Edit,Glob,Grep,Bash
+---
+
+# Agent Title
+
+[Role description and instructions]
+
+## Your First Task: Analyze the Codebase
+[Instructions for learning project patterns]
+
+## Core Patterns
+[Code examples and best practices]
+
+## Testing Patterns
+[Both Minitest and RSpec examples]
+
+## Best Practices
+[Do's and Don'ts]
+
+## Integration with Other Agents
+[Cross-references to related agents]
+```
+
+### Frontmatter Options
+
+| Field | Description | Values |
+|-------|-------------|--------|
+| `name` | Agent identifier (used with `@agent-name`) | kebab-case string |
+| `description` | Short description shown in Claude Code UI | String |
+| `model` | Claude model to use | `sonnet`, `opus`, `haiku` |
+| `tools` | Comma-separated list of allowed tools | `Read,Write,Edit,Glob,Grep,Bash` |
+
+### Adding Project-Specific Patterns
+
+To add patterns from your own codebase:
+
+1. **Identify the pattern** in your codebase
+2. **Extract a minimal example** that demonstrates the pattern
+3. **Add it to the relevant agent** under "Advanced Patterns" or create a new section
+4. **Include both test frameworks** (Minitest and RSpec) when applicable
+
+Example addition to `rails-model-engineer.md`:
+
+```markdown
+## Your Project's Patterns
+
+### Soft Delete Pattern
+
+Your codebase uses soft deletes via `discarded_at`:
+
+\`\`\`ruby
+# app/models/concerns/discardable.rb
+module Discardable
+  extend ActiveSupport::Concern
+
+  included do
+    scope :kept, -> { where(discarded_at: nil) }
+    scope :discarded, -> { where.not(discarded_at: nil) }
+  end
+
+  def discard
+    update!(discarded_at: Time.current)
+  end
+
+  def kept?
+    discarded_at.nil?
+  end
+end
+\`\`\`
+
+Always use this pattern instead of `dependent: :destroy` for user-facing records.
+```
+
+### Creating a New Agent
+
+1. **Create a new markdown file** in the agents directory:
+   ```bash
+   touch rails-your-specialty.md
+   ```
+
+2. **Add the frontmatter**:
+   ```markdown
+   ---
+   name: rails-your-specialty
+   description: Your Specialty Expert - brief description
+   model: sonnet
+   tools: Read,Write,Edit,Glob,Grep,Bash
+   ---
+   ```
+
+3. **Include these sections**:
+   - Role description
+   - "Your First Task: Analyze the Codebase" section
+   - Core patterns with code examples
+   - Testing patterns (both Minitest and RSpec)
+   - Best practices (Do's and Don'ts)
+   - Integration with other agents
+
+4. **Update README.md** to include your new agent
+
+### Enhancing Agents from Your Codebase
+
+Use Claude Code to help analyze your codebase and extract patterns:
+
+```markdown
+@claude Analyze our app/models/concerns/ directory and identify patterns
+that should be added to rails-model-engineer.md. Format them as code
+examples with explanations.
+```
+
+```markdown
+@claude Review our app/jobs/ directory and suggest additions to
+rails-background-jobs.md based on our job patterns.
+```
+
+### Best Practices for Agent Updates
+
+**Do:**
+- Keep examples minimal and focused
+- Include both Minitest and RSpec examples for testing patterns
+- Add "Use When" guidance for new patterns
+- Cross-reference related agents
+- Match the existing formatting style
+- Test patterns in your actual codebase first
+
+**Don't:**
+- Add overly complex examples
+- Include sensitive/proprietary code
+- Remove existing patterns (add alongside them)
+- Forget to update the "Integration with Other Agents" section
+- Skip the "Your First Task" analysis instructions
+
+### Keeping Agents in Sync
+
+When your codebase evolves:
+
+1. **Periodic review**: Review agents quarterly against your codebase
+2. **Pattern extraction**: When you solve something novel, add it to the relevant agent
+3. **Deprecation notes**: Mark outdated patterns as deprecated rather than removing
+4. **Version notes**: Consider adding a changelog section for major updates
+
+```markdown
+## Changelog
+
+### 2024-01
+- Added soft delete pattern from Project X
+- Updated authentication to use magic links
+- Deprecated Devise patterns (migrated to custom auth)
+```
 
 ## ❓ Questions & Troubleshooting
 

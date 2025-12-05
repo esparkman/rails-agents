@@ -732,6 +732,302 @@ end
 - **@rails-testing**: Comprehensive controller and integration tests
 - **@rails-security**: Review authentication, authorization, and input handling
 
+## Advanced Patterns
+
+### Multi-Tenant Resource Scoping
+
+Always load resources through user's accessible scope:
+
+```ruby
+module BoardScoped
+  extend ActiveSupport::Concern
+
+  included do
+    before_action :set_board
+  end
+
+  private
+    def set_board
+      # Load through user's accessible boards - ensures tenant isolation
+      @board = Current.user.boards.find(params[:board_id])
+    end
+
+    def ensure_permission_to_admin_board
+      head :forbidden unless Current.user.can_administer_board?(@board)
+    end
+end
+
+module CardScoped
+  extend ActiveSupport::Concern
+
+  included do
+    before_action :set_card, :set_board
+  end
+
+  private
+    def set_card
+      @card = Current.user.accessible_cards.find_by!(number: params[:card_id])
+    end
+
+    def set_board
+      @board = @card.board
+    end
+
+    # Reusable Turbo Stream response for card updates
+    def render_card_replacement
+      render turbo_stream: turbo_stream.replace(
+        [@card, :card_container],
+        partial: "cards/container",
+        method: :morph,
+        locals: { card: @card.reload }
+      )
+    end
+end
+```
+
+### URL-Based Multi-Tenancy
+
+Extract account from URL path:
+
+```ruby
+# config/initializers/tenanting/account_slug.rb
+class AccountSlugExtractor
+  def initialize(app)
+    @app = app
+  end
+
+  def call(env)
+    request = ActionDispatch::Request.new(env)
+    if match = request.path.match(%r{^/(\d{7,})})
+      account_slug = match[1]
+      if account = Account.find_by(external_account_id: account_slug)
+        Current.account = account
+        env["SCRIPT_NAME"] = "/#{account_slug}"
+        env["PATH_INFO"] = request.path.delete_prefix("/#{account_slug}")
+      end
+    end
+    @app.call(env)
+  end
+end
+
+# In ApplicationController
+module Authentication
+  included do
+    before_action :require_account
+    before_action :require_authentication
+  end
+
+  private
+    def require_account
+      redirect_to session_menu_url(script_name: nil) unless Current.account
+    end
+end
+```
+
+### Nested Concern Composition
+
+Chain concerns that depend on each other:
+
+```ruby
+module DayTimelinesScoped
+  extend ActiveSupport::Concern
+
+  included do
+    include FilterScoped  # Nested concern dependency
+    before_action :set_day_timeline
+  end
+
+  private
+    def set_day_timeline
+      @day_timeline = Current.user.timeline_for(day, filter: @filter)
+    end
+
+    def day
+      if params[:day].present?
+        Time.zone.parse(params[:day])
+      else
+        Time.current
+      end
+    rescue ArgumentError
+      head :not_found
+    end
+end
+```
+
+### Rate Limiting
+
+Protect sensitive endpoints:
+
+```ruby
+class SessionsController < ApplicationController
+  rate_limit to: 10, within: 3.minutes, only: :create,
+             with: -> { redirect_to new_session_path, alert: "Try again later." }
+
+  def create
+    identity = Identity.find_by_email_address(email_address)
+    magic_link = identity&.send_magic_link || Signup.new(email_address:).create_identity
+    redirect_to session_magic_link_path
+  end
+end
+```
+
+### Composite ETags for Caching
+
+Include all relevant data in ETags:
+
+```ruby
+class BoardsController < ApplicationController
+  def show
+    cards = @board.cards.awaiting_triage.latest.preloaded
+    set_page_and_extract_portion_from cards
+    fresh_when etag: [@board, @page.records, @user_filtering]
+  end
+end
+```
+
+### Filter-Based Controller Logic
+
+Handle complex filtering in controllers:
+
+```ruby
+module FilterScoped
+  extend ActiveSupport::Concern
+
+  included do
+    before_action :set_filter
+    before_action :set_user_filtering
+  end
+
+  private
+    def set_filter
+      @filter = if params[:filter_id].present?
+        Current.user.filters.find(params[:filter_id])
+      else
+        Current.user.filters.from_params(filter_params)
+      end
+    end
+
+    def filter_params
+      params.reverse_merge(**Filter.default_values)
+            .permit(*Filter::PERMITTED_PARAMS)
+    end
+
+    def set_user_filtering
+      @user_filtering = User::Filtering.new(Current.user, @filter, expanded: expanded_param)
+    end
+end
+```
+
+### Single-Action Resource Controllers
+
+Create focused controllers for specific actions:
+
+```ruby
+# POST /cards/:card_id/closure
+class Cards::ClosuresController < ApplicationController
+  include CardScoped
+
+  def create
+    @card.close(user: Current.user)
+    render_card_replacement
+  end
+
+  def destroy
+    @card.reopen(user: Current.user)
+    render_card_replacement
+  end
+end
+
+# POST /columns/:column_id/cards/:card_id/drops/closure
+class Columns::Cards::Drops::ClosuresController < ApplicationController
+  include CardScoped
+
+  def create
+    @card.close
+  end
+end
+```
+
+### Turbo Stream Morphing
+
+Use morphing for smooth updates:
+
+```ruby
+def update
+  @card.update!(card_params)
+
+  render turbo_stream: turbo_stream.replace(
+    [@card, :card_container],
+    partial: "cards/container",
+    method: :morph,  # Preserve scroll position, focus
+    locals: { card: @card.reload }
+  )
+end
+```
+
+### Public/Unauthenticated Namespaces
+
+Separate public access controllers:
+
+```ruby
+class Public::BaseController < ApplicationController
+  allow_unauthenticated_access
+
+  before_action :set_board, :set_public_cache_expiration
+
+  private
+    def set_board
+      @board = Board.published.find_by!(public_id: params[:board_id])
+    end
+
+    def set_public_cache_expiration
+      expires_in 30.seconds, public: true
+    end
+end
+
+class Public::CardsController < Public::BaseController
+  def show
+    @card = @board.cards.published.find_by!(number: params[:id])
+  end
+end
+```
+
+### Prompt/Autocomplete Controllers
+
+JSON endpoints for form autocomplete:
+
+```ruby
+class Prompts::CardsController < ApplicationController
+  MAX_RESULTS = 10
+
+  def index
+    @cards = if filter_param.present?
+      prepending_exact_matches_by_id(search_cards)
+    else
+      published_cards.latest
+    end
+
+    render layout: false if stale?(etag: @cards)
+  end
+
+  private
+    def search_cards
+      published_cards
+        .mentioning(params[:filter], user: Current.user)
+        .reverse_chronologically
+        .limit(MAX_RESULTS)
+    end
+
+    def prepending_exact_matches_by_id(cards)
+      if card = Current.user.accessible_cards.find_by(number: params[:filter])
+        [card] + cards
+      else
+        cards
+      end
+    end
+end
+```
+
 ## Anti-Patterns to Avoid
 
 ❌ **Don't:**
@@ -742,6 +1038,7 @@ end
 - Have complex conditionals in actions
 - Rescue all exceptions without specificity
 - Skip testing authorization flows
+- Load resources without scoping through current user
 
 ✅ **Do:**
 - Keep controllers focused on request/response
@@ -751,6 +1048,7 @@ end
 - Extract complex logic to private methods or concerns
 - Handle specific exceptions appropriately
 - Test happy path and authorization failures
+- Always scope resource loading through user's accessible records
 
 ## Response Format
 
