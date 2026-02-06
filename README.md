@@ -177,6 +177,76 @@ These agents form a **codebase-aware Rails development team** that:
 
 ---
 
+### 🧩 @rails-viewcomponent-engineer
+**ViewComponent & Component-Driven UI Specialist**
+
+**Model**: Claude Sonnet 4.5
+**Tools**: Read, Write, Edit, Glob, Grep, Bash
+
+**Responsibilities**:
+- ViewComponent design and implementation
+- Slot patterns (single, multiple, polymorphic)
+- Component variants and configuration
+- Stimulus integration within components
+- Component testing and previews
+
+**Use When**:
+- Building reusable UI components with ViewComponent
+- Designing slot-based component APIs
+- Creating component previews and lookbooks
+- Integrating Stimulus controllers with components
+- Refactoring partials into ViewComponents
+
+---
+
+### 📧 @rails-mailer
+**Email & Mailer Specialist**
+
+**Model**: Claude Sonnet 4.5
+**Tools**: Read, Write, Edit, Glob, Grep, Bash
+
+**Responsibilities**:
+- Action Mailer implementation
+- Email templates (HTML + text)
+- Mailer previews and testing
+- Delivery configuration (SMTP, Postmark, SendGrid)
+- Interceptors and observers
+- Async delivery patterns
+
+**Use When**:
+- Creating transactional emails
+- Setting up mailer previews
+- Configuring email delivery for environments
+- Implementing parameterized mailers
+- Adding email attachments
+
+---
+
+### 🚢 @rails-deployment
+**Deployment & Infrastructure Specialist**
+
+**Model**: Claude Sonnet 4.5
+**Tools**: Read, Write, Edit, Glob, Grep, Bash
+
+**Responsibilities**:
+- Kamal deployment configuration
+- Docker multi-stage builds
+- Production environment setup
+- SSL/proxy configuration
+- Health checks and monitoring
+- Secret management
+- Server operations and troubleshooting
+
+**Use When**:
+- Setting up Kamal for a new project
+- Configuring Docker builds
+- Managing production deployments
+- Troubleshooting production issues
+- Setting up CI/CD pipelines
+- Configuring SSL and proxies
+
+---
+
 ## 🚀 How to Use
 
 ### Claude Code Sub-Agents
@@ -236,8 +306,11 @@ These agents are designed to work as **Claude Code sub-agents**. Claude Code loo
 2. **Data Layer** → @rails-model-engineer implements models
 3. **API Layer** → @rails-controller-engineer builds controllers
 4. **Frontend** → @rails-hotwire-engineer creates views
-5. **Testing** → @rails-testing-expert writes tests
-6. **Review** → @rails-security-performance audits
+5. **Components** → @rails-viewcomponent-engineer builds reusable UI
+6. **Email** → @rails-mailer implements notifications (if needed)
+7. **Testing** → @rails-testing-expert writes tests
+8. **Review** → @rails-security-performance audits
+9. **Deploy** → @rails-deployment handles production release
 
 ### Example: Adding a New Feature
 
@@ -336,8 +409,13 @@ Match your question to the agent's expertise:
 - Data modeling → @rails-model-engineer
 - API design → @rails-controller-engineer
 - UI work → @rails-hotwire-engineer
+- ViewComponents → @rails-viewcomponent-engineer
 - Testing → @rails-testing-expert
 - Security/Performance → @rails-security-performance
+- Background jobs → @rails-background-jobs
+- Authentication → @rails-authentication
+- Email/mailers → @rails-mailer
+- Deployment/infrastructure → @rails-deployment
 
 ### 2. Provide Context
 

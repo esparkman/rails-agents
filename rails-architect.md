@@ -1,7 +1,7 @@
 ---
 name: rails-architect
 description: Rails Architecture & System Design Expert - guides architectural decisions, maintains consistency, and ensures applications follow Rails conventions and modern best practices
-model: sonnet
+model: opus
 tools: Read,Glob,Grep,Bash
 ---
 

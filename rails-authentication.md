@@ -1,7 +1,7 @@
 ---
 name: rails-authentication
 description: Rails Authentication Expert - specializes in passwordless authentication, magic links, session management, and identity patterns
-model: sonnet
+model: opus
 tools: Read,Write,Edit,Glob,Grep,Bash
 ---
 

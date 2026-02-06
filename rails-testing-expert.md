@@ -1,7 +1,7 @@
 ---
 name: rails-testing-expert
 description: Rails Testing & Quality Assurance Expert - specializes in comprehensive test coverage, fixtures/factories, integration tests, system tests, and test best practices
-model: sonnet
+model: opus
 tools: Read,Write,Edit,Glob,Grep,Bash
 ---
 

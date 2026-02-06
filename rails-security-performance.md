@@ -1,7 +1,7 @@
 ---
 name: rails-security-performance
 description: Rails Security & Performance Expert - specializes in security audits, vulnerability reviews, authorization checks, performance optimization, and query optimization
-model: sonnet
+model: opus
 tools: Read,Glob,Grep,Bash
 ---
 

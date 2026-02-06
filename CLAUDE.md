@@ -10,7 +10,7 @@ This is a collection of specialized AI agent prompt files for Ruby on Rails deve
 
 ## Agent Architecture
 
-Eight specialized agents form a complete Rails development team:
+Eleven specialized agents form a complete Rails development team:
 
 | Agent | Role | Tools |
 |-------|------|-------|
@@ -18,10 +18,13 @@ Eight specialized agents form a complete Rails development team:
 | `rails-model-engineer` | Models, migrations, ActiveRecord, database | Read, Write, Edit, Glob, Grep, Bash |
 | `rails-controller-engineer` | Controllers, routing, authentication, APIs | Read, Write, Edit, Glob, Grep, Bash |
 | `rails-hotwire-engineer` | Views, Hotwire, Stimulus, frontend | Read, Write, Edit, Glob, Grep, Bash |
+| `rails-viewcomponent-engineer` | ViewComponent design, slots, variants, component-driven UI | Read, Write, Edit, Glob, Grep, Bash |
 | `rails-testing-expert` | Tests, fixtures, coverage | Read, Write, Edit, Glob, Grep, Bash |
 | `rails-security-performance` | Security audits, performance optimization | Read, Glob, Grep, Bash |
 | `rails-background-jobs` | Background jobs, Solid Queue, recurring tasks, async processing | Read, Write, Edit, Glob, Grep, Bash |
 | `rails-authentication` | Magic links, sessions, identity patterns, OAuth | Read, Write, Edit, Glob, Grep, Bash |
+| `rails-mailer` | Action Mailer, email templates, previews, delivery configuration | Read, Write, Edit, Glob, Grep, Bash |
+| `rails-deployment` | Kamal, Docker, production configuration, server operations | Read, Write, Edit, Glob, Grep, Bash |
 
 ## Agent File Format
 
@@ -47,8 +50,11 @@ Agents are designed to be invoked in sequence for feature development:
 2. **Data Layer** - `@rails-model-engineer` implements models/migrations
 3. **API Layer** - `@rails-controller-engineer` builds controllers/routes
 4. **Frontend** - `@rails-hotwire-engineer` creates views/JS
-5. **Testing** - `@rails-testing-expert` writes tests
-6. **Review** - `@rails-security-performance` audits
+5. **Components** - `@rails-viewcomponent-engineer` builds ViewComponents
+6. **Email** - `@rails-mailer` implements mailers and templates
+7. **Testing** - `@rails-testing-expert` writes tests
+8. **Review** - `@rails-security-performance` audits
+9. **Deployment** - `@rails-deployment` handles production deploy
 
 ## Key Design Principles
 
