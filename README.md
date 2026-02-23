@@ -16,7 +16,7 @@ These agents form a **codebase-aware Rails development team** that:
 ### 🏗️ @rails-architect
 **Technical Lead & System Designer**
 
-**Model**: Claude Sonnet 4.5
+**Model**: Claude Opus 4.6
 **Tools**: Read, Glob, Grep, Bash
 
 **Responsibilities**:
@@ -36,7 +36,7 @@ These agents form a **codebase-aware Rails development team** that:
 ### 🗄️ @rails-model-engineer
 **Data Layer Specialist**
 
-**Model**: Claude Sonnet 4.5
+**Model**: Claude Sonnet 4.6
 **Tools**: Read, Write, Edit, Glob, Grep, Bash
 
 **Responsibilities**:
@@ -56,7 +56,7 @@ These agents form a **codebase-aware Rails development team** that:
 ### 🎛️ @rails-controller-engineer
 **API & Request Handler**
 
-**Model**: Claude Sonnet 4.5
+**Model**: Claude Sonnet 4.6
 **Tools**: Read, Write, Edit, Glob, Grep, Bash
 
 **Responsibilities**:
@@ -76,7 +76,7 @@ These agents form a **codebase-aware Rails development team** that:
 ### 🎨 @rails-hotwire-engineer
 **Frontend & Interaction Specialist**
 
-**Model**: Claude Sonnet 4.5
+**Model**: Claude Sonnet 4.6
 **Tools**: Read, Write, Edit, Glob, Grep, Bash
 
 **Responsibilities**:
@@ -96,7 +96,7 @@ These agents form a **codebase-aware Rails development team** that:
 ### 🧪 @rails-testing-expert
 **Quality Assurance & Testing**
 
-**Model**: Claude Sonnet 4.5
+**Model**: Claude Sonnet 4.6
 **Tools**: Read, Write, Edit, Glob, Grep, Bash
 
 **Responsibilities**:
@@ -116,7 +116,7 @@ These agents form a **codebase-aware Rails development team** that:
 ### 🔒 @rails-security-performance
 **Security & Performance Auditor**
 
-**Model**: Claude Sonnet 4.5
+**Model**: Claude Opus 4.6
 **Tools**: Read, Glob, Grep, Bash
 
 **Responsibilities**:
@@ -136,7 +136,7 @@ These agents form a **codebase-aware Rails development team** that:
 ### ⚡ @rails-background-jobs
 **Background Jobs & Async Processing Specialist**
 
-**Model**: Claude Sonnet 4.5
+**Model**: Claude Sonnet 4.6
 **Tools**: Read, Write, Edit, Glob, Grep, Bash
 
 **Responsibilities**:
@@ -158,7 +158,7 @@ These agents form a **codebase-aware Rails development team** that:
 ### 🔐 @rails-authentication
 **Authentication & Identity Specialist**
 
-**Model**: Claude Sonnet 4.5
+**Model**: Claude Sonnet 4.6
 **Tools**: Read, Write, Edit, Glob, Grep, Bash
 
 **Responsibilities**:
@@ -180,7 +180,7 @@ These agents form a **codebase-aware Rails development team** that:
 ### 🧩 @rails-viewcomponent-engineer
 **ViewComponent & Component-Driven UI Specialist**
 
-**Model**: Claude Sonnet 4.5
+**Model**: Claude Sonnet 4.6
 **Tools**: Read, Write, Edit, Glob, Grep, Bash
 
 **Responsibilities**:
@@ -202,7 +202,7 @@ These agents form a **codebase-aware Rails development team** that:
 ### 📧 @rails-mailer
 **Email & Mailer Specialist**
 
-**Model**: Claude Sonnet 4.5
+**Model**: Claude Sonnet 4.6
 **Tools**: Read, Write, Edit, Glob, Grep, Bash
 
 **Responsibilities**:
@@ -225,7 +225,7 @@ These agents form a **codebase-aware Rails development team** that:
 ### 🚢 @rails-deployment
 **Deployment & Infrastructure Specialist**
 
-**Model**: Claude Sonnet 4.5
+**Model**: Claude Sonnet 4.6
 **Tools**: Read, Write, Edit, Glob, Grep, Bash
 
 **Responsibilities**:
@@ -244,6 +244,131 @@ These agents form a **codebase-aware Rails development team** that:
 - Troubleshooting production issues
 - Setting up CI/CD pipelines
 - Configuring SSL and proxies
+
+---
+
+### 📦 @rails-data-migration
+**Data Migration & Seeds Specialist**
+
+**Model**: Claude Sonnet 4.6
+**Tools**: Read, Write, Edit, Glob, Grep, Bash
+
+**Responsibilities**:
+- Data migrations (separate from schema migrations)
+- Seed data management and organization
+- Backfill scripts and bulk data operations
+- Maintenance tasks and cleanup jobs
+
+**Use When**:
+- Backfilling data after schema changes
+- Managing seed data across environments
+- Bulk updating or transforming records
+- Cleaning up orphaned or duplicate data
+
+---
+
+### 🧠 @rails-domain-logic
+**Domain Logic & PORO Specialist**
+
+**Model**: Claude Sonnet 4.6
+**Tools**: Read, Write, Edit, Glob, Grep, Bash
+
+**Responsibilities**:
+- Rich domain model patterns (preferred over service objects)
+- Service objects for multi-model orchestration
+- Form objects for complex forms
+- Query objects for advanced filtering
+- Plain Ruby objects and value objects
+
+**Use When**:
+- Implementing complex business logic
+- Building multi-step workflows (signup, checkout)
+- Creating form objects for non-model-backed forms
+- Extracting query logic from controllers
+
+---
+
+### 📡 @rails-api-serializer
+**API Serialization & Response Specialist**
+
+**Model**: Claude Sonnet 4.6
+**Tools**: Read, Write, Edit, Glob, Grep, Bash
+
+**Responsibilities**:
+- JSON API response formatting (jbuilder, Blueprinter, Alba)
+- API versioning strategies
+- Pagination (Pagy, cursor-based)
+- Webhook payload serialization
+- Response envelope patterns
+
+**Use When**:
+- Building JSON API endpoints
+- Adding pagination to collection endpoints
+- Designing webhook payloads
+- Setting up API versioning
+
+---
+
+### ♿ @rails-accessibility
+**Accessibility & Inclusive Design Specialist**
+
+**Model**: Claude Sonnet 4.6
+**Tools**: Read, Write, Edit, Glob, Grep, Bash
+
+**Responsibilities**:
+- WCAG 2.1 AA compliance
+- Semantic HTML and ARIA attributes
+- Keyboard navigation and focus management
+- Screen reader support
+- Accessible forms and dynamic content
+
+**Use When**:
+- Auditing pages for accessibility issues
+- Adding keyboard navigation to components
+- Making forms accessible with proper labels and errors
+- Ensuring Turbo/Stimulus updates are announced to screen readers
+
+---
+
+### 🌐 @rails-i18n
+**Internationalization & Localization Specialist**
+
+**Model**: Claude Sonnet 4.6
+**Tools**: Read, Write, Edit, Glob, Grep, Bash
+
+**Responsibilities**:
+- Locale file organization and management
+- Translation helpers in views and controllers
+- Date, time, and number formatting
+- Pluralization rules
+- Multi-language support
+
+**Use When**:
+- Adding multi-language support
+- Centralizing flash messages and error strings
+- Formatting dates and numbers for locales
+- Setting up locale switching
+
+---
+
+### 📎 @rails-active-storage
+**File Upload & Storage Specialist**
+
+**Model**: Claude Sonnet 4.6
+**Tools**: Read, Write, Edit, Glob, Grep, Bash
+
+**Responsibilities**:
+- Active Storage setup and configuration
+- Image variants and processing
+- Direct uploads with progress
+- Cloud storage (S3, GCS) configuration
+- Attachment validations and security
+
+**Use When**:
+- Adding file uploads to models
+- Configuring image variants
+- Setting up direct uploads with drag-and-drop
+- Configuring cloud storage for production
 
 ---
 
@@ -304,13 +429,19 @@ These agents are designed to work as **Claude Code sub-agents**. Claude Code loo
 
 1. **Architecture** → @rails-architect designs the approach
 2. **Data Layer** → @rails-model-engineer implements models
-3. **API Layer** → @rails-controller-engineer builds controllers
-4. **Frontend** → @rails-hotwire-engineer creates views
-5. **Components** → @rails-viewcomponent-engineer builds reusable UI
-6. **Email** → @rails-mailer implements notifications (if needed)
-7. **Testing** → @rails-testing-expert writes tests
-8. **Review** → @rails-security-performance audits
-9. **Deploy** → @rails-deployment handles production release
+3. **Data Migrations** → @rails-data-migration handles seeds/backfills
+4. **Domain Logic** → @rails-domain-logic implements service/form/query objects
+5. **API Layer** → @rails-controller-engineer builds controllers
+6. **API Serialization** → @rails-api-serializer shapes JSON responses
+7. **Frontend** → @rails-hotwire-engineer creates views
+8. **Components** → @rails-viewcomponent-engineer builds reusable UI
+9. **Accessibility** → @rails-accessibility ensures WCAG compliance
+10. **Internationalization** → @rails-i18n adds translations
+11. **File Uploads** → @rails-active-storage handles attachments
+12. **Email** → @rails-mailer implements notifications (if needed)
+13. **Testing** → @rails-testing-expert writes tests
+14. **Review** → @rails-security-performance audits
+15. **Deploy** → @rails-deployment handles production release
 
 ### Example: Adding a New Feature
 
@@ -407,9 +538,15 @@ Agents reference:
 Match your question to the agent's expertise:
 - Architecture questions → @rails-architect
 - Data modeling → @rails-model-engineer
+- Data migrations & seeds → @rails-data-migration
+- Business logic & POROs → @rails-domain-logic
 - API design → @rails-controller-engineer
+- API serialization & pagination → @rails-api-serializer
 - UI work → @rails-hotwire-engineer
 - ViewComponents → @rails-viewcomponent-engineer
+- Accessibility & WCAG → @rails-accessibility
+- Translations & i18n → @rails-i18n
+- File uploads & storage → @rails-active-storage
 - Testing → @rails-testing-expert
 - Security/Performance → @rails-security-performance
 - Background jobs → @rails-background-jobs
@@ -665,6 +802,6 @@ These agents are designed to be dropped into any Rails project. Use them freely 
 ---
 
 **Built for**: Any Ruby on Rails Application
-**Version**: 1.0
-**Model**: Claude Sonnet 4.5
+**Version**: 2.0
+**Models**: Claude Opus 4.6 (architect, security) / Claude Sonnet 4.6 (all others)
 **Integration**: Agent OS Compatible

@@ -1,7 +1,7 @@
 ---
 name: rails-viewcomponent-engineer
 description: Rails ViewComponent Expert - specializes in ViewComponent design, slots, variants, Stimulus integration, and component-driven UI architecture
-model: opus
+model: sonnet
 tools: Read,Write,Edit,Glob,Grep,Bash
 ---
 

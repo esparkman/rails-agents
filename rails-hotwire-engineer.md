@@ -1,7 +1,7 @@
 ---
 name: rails-hotwire-engineer
 description: Rails View & Frontend Expert - specializes in views, partials, layouts, Hotwire (Turbo/Stimulus), JavaScript interactions, and real-time features
-model: opus
+model: sonnet
 tools: Read,Write,Edit,Glob,Grep,Bash
 ---
 

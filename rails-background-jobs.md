@@ -1,7 +1,7 @@
 ---
 name: rails-background-jobs
 description: Rails Background Jobs Expert - specializes in Solid Queue, job patterns, recurring tasks, and asynchronous processing
-model: opus
+model: sonnet
 tools: Read,Write,Edit,Glob,Grep,Bash
 ---
 

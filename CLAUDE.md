@@ -10,21 +10,27 @@ This is a collection of specialized AI agent prompt files for Ruby on Rails deve
 
 ## Agent Architecture
 
-Eleven specialized agents form a complete Rails development team:
+Seventeen specialized agents form a complete Rails development team:
 
-| Agent | Role | Tools |
-|-------|------|-------|
-| `rails-architect` | Technical lead, system design, architectural decisions | Read, Glob, Grep, Bash |
-| `rails-model-engineer` | Models, migrations, ActiveRecord, database | Read, Write, Edit, Glob, Grep, Bash |
-| `rails-controller-engineer` | Controllers, routing, authentication, APIs | Read, Write, Edit, Glob, Grep, Bash |
-| `rails-hotwire-engineer` | Views, Hotwire, Stimulus, frontend | Read, Write, Edit, Glob, Grep, Bash |
-| `rails-viewcomponent-engineer` | ViewComponent design, slots, variants, component-driven UI | Read, Write, Edit, Glob, Grep, Bash |
-| `rails-testing-expert` | Tests, fixtures, coverage | Read, Write, Edit, Glob, Grep, Bash |
-| `rails-security-performance` | Security audits, performance optimization | Read, Glob, Grep, Bash |
-| `rails-background-jobs` | Background jobs, Solid Queue, recurring tasks, async processing | Read, Write, Edit, Glob, Grep, Bash |
-| `rails-authentication` | Magic links, sessions, identity patterns, OAuth | Read, Write, Edit, Glob, Grep, Bash |
-| `rails-mailer` | Action Mailer, email templates, previews, delivery configuration | Read, Write, Edit, Glob, Grep, Bash |
-| `rails-deployment` | Kamal, Docker, production configuration, server operations | Read, Write, Edit, Glob, Grep, Bash |
+| Agent | Role | Model | Tools |
+|-------|------|-------|-------|
+| `rails-architect` | Technical lead, system design, architectural decisions | opus | Read, Glob, Grep, Bash |
+| `rails-security-performance` | Security audits, performance optimization | opus | Read, Glob, Grep, Bash |
+| `rails-model-engineer` | Models, migrations, ActiveRecord, database | sonnet | Read, Write, Edit, Glob, Grep, Bash |
+| `rails-controller-engineer` | Controllers, routing, authentication, APIs | sonnet | Read, Write, Edit, Glob, Grep, Bash |
+| `rails-hotwire-engineer` | Views, Hotwire, Stimulus, frontend | sonnet | Read, Write, Edit, Glob, Grep, Bash |
+| `rails-viewcomponent-engineer` | ViewComponent design, slots, variants, component-driven UI | sonnet | Read, Write, Edit, Glob, Grep, Bash |
+| `rails-authentication` | Magic links, sessions, identity patterns, OAuth | sonnet | Read, Write, Edit, Glob, Grep, Bash |
+| `rails-background-jobs` | Background jobs, Solid Queue, recurring tasks, async processing | sonnet | Read, Write, Edit, Glob, Grep, Bash |
+| `rails-mailer` | Action Mailer, email templates, previews, delivery configuration | sonnet | Read, Write, Edit, Glob, Grep, Bash |
+| `rails-data-migration` | Data migrations, seeds, backfills, bulk data operations | sonnet | Read, Write, Edit, Glob, Grep, Bash |
+| `rails-domain-logic` | Service objects, form objects, query objects, POROs | sonnet | Read, Write, Edit, Glob, Grep, Bash |
+| `rails-api-serializer` | JSON API serialization, versioning, pagination | sonnet | Read, Write, Edit, Glob, Grep, Bash |
+| `rails-accessibility` | WCAG compliance, ARIA, keyboard navigation, screen readers | sonnet | Read, Write, Edit, Glob, Grep, Bash |
+| `rails-i18n` | Locale files, translations, date/time formatting | sonnet | Read, Write, Edit, Glob, Grep, Bash |
+| `rails-active-storage` | File uploads, image variants, direct uploads, cloud storage | sonnet | Read, Write, Edit, Glob, Grep, Bash |
+| `rails-testing-expert` | Tests, fixtures, coverage | sonnet | Read, Write, Edit, Glob, Grep, Bash |
+| `rails-deployment` | Kamal, Docker, production configuration, server operations | sonnet | Read, Write, Edit, Glob, Grep, Bash |
 
 ## Agent File Format
 
@@ -48,13 +54,19 @@ tools: Read,Write,Edit,Glob,Grep,Bash
 Agents are designed to be invoked in sequence for feature development:
 1. **Architecture** - `@rails-architect` designs approach
 2. **Data Layer** - `@rails-model-engineer` implements models/migrations
-3. **API Layer** - `@rails-controller-engineer` builds controllers/routes
-4. **Frontend** - `@rails-hotwire-engineer` creates views/JS
-5. **Components** - `@rails-viewcomponent-engineer` builds ViewComponents
-6. **Email** - `@rails-mailer` implements mailers and templates
-7. **Testing** - `@rails-testing-expert` writes tests
-8. **Review** - `@rails-security-performance` audits
-9. **Deployment** - `@rails-deployment` handles production deploy
+3. **Data Migrations** - `@rails-data-migration` handles seeds and backfills
+4. **Domain Logic** - `@rails-domain-logic` implements service/form/query objects
+5. **API Layer** - `@rails-controller-engineer` builds controllers/routes
+6. **API Serialization** - `@rails-api-serializer` shapes JSON responses
+7. **Frontend** - `@rails-hotwire-engineer` creates views/JS
+8. **Components** - `@rails-viewcomponent-engineer` builds ViewComponents
+9. **Accessibility** - `@rails-accessibility` ensures WCAG compliance
+10. **Internationalization** - `@rails-i18n` adds translations
+11. **File Uploads** - `@rails-active-storage` handles attachments
+12. **Email** - `@rails-mailer` implements mailers and templates
+13. **Testing** - `@rails-testing-expert` writes tests
+14. **Review** - `@rails-security-performance` audits
+15. **Deployment** - `@rails-deployment` handles production deploy
 
 ## Key Design Principles
 

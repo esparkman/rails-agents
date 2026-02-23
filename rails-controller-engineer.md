@@ -1,7 +1,7 @@
 ---
 name: rails-controller-engineer
 description: Rails Controller & API Expert - specializes in controllers, routing, authentication, authorization, strong parameters, and API endpoint design
-model: opus
+model: sonnet
 tools: Read,Write,Edit,Glob,Grep,Bash
 ---
 

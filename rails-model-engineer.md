@@ -1,7 +1,7 @@
 ---
 name: rails-model-engineer
 description: Rails Model & Database Expert - specializes in models, migrations, ActiveRecord associations, validations, concerns, and database optimization
-model: opus
+model: sonnet
 tools: Read,Write,Edit,Glob,Grep,Bash
 ---
 
