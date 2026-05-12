@@ -133,6 +133,28 @@ These agents form a **codebase-aware Rails development team** that:
 
 ---
 
+### 🧐 @dhh-code-reviewer
+**DHH-Standards Code Reviewer — Mandatory Post-Write Gate**
+
+**Model**: Claude Opus 4.6
+**Tools**: Read, Write, Edit, Glob, Grep, Bash
+
+**Responsibilities**:
+- Reviews newly written or modified Ruby/Rails and JavaScript/Svelte code against DHH's exacting standards
+- Flags non-idiomatic patterns, unnecessary complexity, and Rails-convention violations
+- Provides concrete refactoring suggestions with before/after examples
+- Cross-references existing codebase patterns for consistency
+
+**Use When**:
+- **Always**, after any code-writing task by you or a sub-agent (this is the **mandatory review gate** — see global CLAUDE.md "MANDATORY: DHH Code Review Gate")
+- After refactoring Ruby, Rails, JavaScript, or Svelte code
+- Before proposing a commit or marking a task complete
+- When auditing whether a feature would be "Rails-core worthy"
+
+> **Blocking gate:** Code-writing tasks are not complete until `@dhh-code-reviewer` has run and any Critical Issues have been resolved. The user can waive per-task with explicit opt-out language ("skip review", "no review", "ship without review"). Acceptance of code is not a waiver.
+
+---
+
 ### ⚡ @rails-background-jobs
 **Background Jobs & Async Processing Specialist**
 
@@ -440,8 +462,11 @@ These agents are designed to work as **Claude Code sub-agents**. Claude Code loo
 11. **File Uploads** → @rails-active-storage handles attachments
 12. **Email** → @rails-mailer implements notifications (if needed)
 13. **Testing** → @rails-testing-expert writes tests
-14. **Review** → @rails-security-performance audits
-15. **Deploy** → @rails-deployment handles production release
+14. **Security/Performance Review** → @rails-security-performance audits
+15. **DHH Code Review (mandatory gate)** → @dhh-code-reviewer reviews against Rails-core standards
+16. **Deploy** → @rails-deployment handles production release
+
+> Step 15 is a **blocking gate**: any task that produced Ruby, JavaScript, Svelte, or ViewComponent code is not complete until `@dhh-code-reviewer` has run and Critical Issues have been resolved. See global CLAUDE.md ("MANDATORY: DHH Code Review Gate") for the full enforcement rules and the user opt-out language.
 
 ### Example: Adding a New Feature
 
@@ -549,6 +574,7 @@ Match your question to the agent's expertise:
 - File uploads & storage → @rails-active-storage
 - Testing → @rails-testing-expert
 - Security/Performance → @rails-security-performance
+- Post-write code review (mandatory gate) → @dhh-code-reviewer
 - Background jobs → @rails-background-jobs
 - Authentication → @rails-authentication
 - Email/mailers → @rails-mailer

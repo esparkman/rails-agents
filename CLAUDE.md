@@ -10,12 +10,13 @@ This is a collection of specialized AI agent prompt files for Ruby on Rails deve
 
 ## Agent Architecture
 
-Seventeen specialized agents form a complete Rails development team:
+Eighteen specialized agents form a complete Rails development team:
 
 | Agent | Role | Model | Tools |
 |-------|------|-------|-------|
 | `rails-architect` | Technical lead, system design, architectural decisions | opus | Read, Glob, Grep, Bash |
 | `rails-security-performance` | Security audits, performance optimization | opus | Read, Glob, Grep, Bash |
+| `dhh-code-reviewer` | Post-write review against DHH's standards — **mandatory gate** after any Ruby/JS/Svelte change | opus | Read, Write, Edit, Glob, Grep, Bash |
 | `rails-model-engineer` | Models, migrations, ActiveRecord, database | sonnet | Read, Write, Edit, Glob, Grep, Bash |
 | `rails-controller-engineer` | Controllers, routing, authentication, APIs | sonnet | Read, Write, Edit, Glob, Grep, Bash |
 | `rails-hotwire-engineer` | Views, Hotwire, Stimulus, frontend | sonnet | Read, Write, Edit, Glob, Grep, Bash |
@@ -65,8 +66,11 @@ Agents are designed to be invoked in sequence for feature development:
 11. **File Uploads** - `@rails-active-storage` handles attachments
 12. **Email** - `@rails-mailer` implements mailers and templates
 13. **Testing** - `@rails-testing-expert` writes tests
-14. **Review** - `@rails-security-performance` audits
-15. **Deployment** - `@rails-deployment` handles production deploy
+14. **Security/Performance Review** - `@rails-security-performance` audits
+15. **DHH Code Review (mandatory gate)** - `@dhh-code-reviewer` reviews against Rails-core standards; task is not complete until this passes
+16. **Deployment** - `@rails-deployment` handles production deploy
+
+> **Note:** Step 15 is a blocking gate enforced by the global CLAUDE.md ("MANDATORY: DHH Code Review Gate"). Any Ruby, JavaScript, Svelte, or ViewComponent change must pass through `@dhh-code-reviewer` before the task is marked done or a commit is proposed. The user can waive per-task with explicit opt-out language ("skip review", "no review", etc.).
 
 ## Key Design Principles
 

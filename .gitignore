@@ -8,3 +8,7 @@
 # Backup files
 *.bak
 *~
+
+# Opencode (kept locally, not tracked for now)
+.opencode/
+opencode/
