@@ -10,7 +10,7 @@ This is a collection of specialized AI agent prompt files for Ruby on Rails deve
 
 ## Agent Architecture
 
-Eighteen specialized agents form a complete Rails development team:
+Nineteen specialized agents form a complete Rails development team:
 
 | Agent | Role | Model | Tools |
 |-------|------|-------|-------|
@@ -32,6 +32,7 @@ Eighteen specialized agents form a complete Rails development team:
 | `rails-active-storage` | File uploads, image variants, direct uploads, cloud storage | sonnet | Read, Write, Edit, Glob, Grep, Bash |
 | `rails-testing-expert` | Tests, fixtures, coverage | sonnet | Read, Write, Edit, Glob, Grep, Bash |
 | `rails-deployment` | Kamal, Docker, production configuration, server operations | sonnet | Read, Write, Edit, Glob, Grep, Bash |
+| `rails-git-workflow` | Branching, commit hygiene, pull requests, merges, releases, tags | sonnet | Read, Grep, Glob, Bash, Edit |
 
 ## Agent File Format
 
@@ -68,7 +69,8 @@ Agents are designed to be invoked in sequence for feature development:
 13. **Testing** - `@rails-testing-expert` writes tests
 14. **Security/Performance Review** - `@rails-security-performance` audits
 15. **DHH Code Review (mandatory gate)** - `@dhh-code-reviewer` reviews against Rails-core standards; task is not complete until this passes
-16. **Deployment** - `@rails-deployment` handles production deploy
+16. **Git Workflow** - `@rails-git-workflow` branches, commits, opens the PR, merges, and tags the release
+17. **Deployment** - `@rails-deployment` handles production deploy
 
 > **Note:** Step 15 is a blocking gate enforced by the global CLAUDE.md ("MANDATORY: DHH Code Review Gate"). Any Ruby, JavaScript, Svelte, or ViewComponent change must pass through `@dhh-code-reviewer` before the task is marked done or a commit is proposed. The user can waive per-task with explicit opt-out language ("skip review", "no review", etc.).
 

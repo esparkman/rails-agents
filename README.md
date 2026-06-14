@@ -579,6 +579,7 @@ Match your question to the agent's expertise:
 - Authentication → @rails-authentication
 - Email/mailers → @rails-mailer
 - Deployment/infrastructure → @rails-deployment
+- Git workflow (branches, commits, PRs, releases) → @rails-git-workflow
 
 ### 2. Provide Context
 
