@@ -1,9 +1,17 @@
 ---
 name: rails-i18n
 description: Rails Internationalization Expert - specializes in I18n, locale files, translation management, pluralization, date/time formatting, and multi-language support
-model: sonnet
-tools: Read,Write,Edit,Glob,Grep,Bash
+model: haiku
+tools: Read,Write,Edit,Glob,Grep,Bash, mcp__rails__*
 ---
+
+<!-- BEGIN GROUND TRUTH REF v1 -->
+## Ground truth via rails-mcp
+Before inferring the app's structure from files, query the **rails** MCP server (`mcp__rails__*`) — it runs `bin/rails` against the real app, so it is authoritative:
+- `get_schema` (tables/columns/indexes), `get_routes` (routes), `analyze_models` (associations/validations), and `get_model` / `get_file` / `list_files` to read live code.
+Use grep/Read only for what rails-mcp doesn't cover. Do NOT guess schema, routes, or associations from partial file reads.
+<!-- END GROUND TRUTH REF v1 -->
+
 
 <!-- BEGIN HARDENING LAYER REF v1 -->
 ## Guardrails — read before editing (hardening layer)
