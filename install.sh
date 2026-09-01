@@ -38,12 +38,28 @@ wire_one() {
   local cdir="$target/.claude"
   mkdir -p "$cdir/agents"
 
-  # 1. agent symlinks -> this bundle
+  # 1. agent symlinks -> this bundle. Link every bundle *.md except repo docs,
+  #    then prune anything stale so agents/ mirrors the current bundle exactly
+  #    (a removed agent must not leave a dangling link — the drift alarm's job).
+  local -a want=()
   local n=0
   for f in "$BUNDLE"/*.md; do
-    ln -sfn "$f" "$cdir/agents/$(basename "$f")"
+    local base; base="$(basename "$f")"
+    case "$base" in README.md | README-HANDOFF.md) continue ;; esac
+    ln -sfn "$f" "$cdir/agents/$base"
+    want+=("$base")
     n=$((n + 1))
   done
+  # prune: drop any agents/ symlink that's broken or no longer in the bundle
+  local pruned=0 l base keep
+  for l in "$cdir/agents"/*; do
+    [ -L "$l" ] || continue
+    base="$(basename "$l")"
+    keep=""
+    for w in "${want[@]}"; do [ "$w" = "$base" ] && keep=1 && break; done
+    if [ -z "$keep" ]; then rm -f "$l"; pruned=$((pruned + 1)); fi
+  done
+  [ "$pruned" -gt 0 ] && echo "  agents: pruned $pruned stale symlink(s)"
 
   # 2. settings.json Stop hook — leave any pre-existing config alone
   local settings="$cdir/settings.json"
