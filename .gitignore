@@ -12,3 +12,8 @@
 # Opencode (kept locally, not tracked for now)
 .opencode/
 opencode/
+
+# Personal layer — never push to this PUBLIC repo. Handed off privately.
+# global-CLAUDE.md carries personal workflow/vault config; docs/ name internal services.
+templates/
+docs/

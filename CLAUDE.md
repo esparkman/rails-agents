@@ -74,6 +74,29 @@ Agents are designed to be invoked in sequence for feature development:
 
 > **Note:** Step 15 is a blocking gate enforced by the global CLAUDE.md ("MANDATORY: DHH Code Review Gate"). Any Ruby, JavaScript, Svelte, or ViewComponent change must pass through `@dhh-code-reviewer` before the task is marked done or a commit is proposed. The user can waive per-task with explicit opt-out language ("skip review", "no review", etc.).
 
+## Pipeline discipline (from the 2026-08-31 harness retro)
+
+**Size-aware tiers — match ceremony to blast radius.** The scoping step stamps one tier:
+- **Trivial** (≤1 file, no schema/route/security change): testing-expert (red) → implementer → `@dhh-code-reviewer` → commit. **Skip the architect.**
+- **Standard** (default): the full Workflow Pattern above.
+- **Structural** (schema / security / multi-file): full pipeline **+ a mandatory footgun/transaction review** (loaded-association `dependent: :destroy` cascades, money, N+1, auth, multi-record transactions).
+
+**Full suite INCLUDING system is a named pre-dhh step (owned by `@rails-testing-expert`).** `bin/rails test` excludes `test/system/` by default; run the full suite incl. system (sandbox-off for Selenium) and confirm green before the dhh gate. A step, not an orchestrator habit — a real bug (D2 system-destroy) slipped once because it was implicit.
+
+**Fan-out is the default for disjoint-file work.** Launch independent files in parallel (≥2 independent files); serialize only true dependencies (migration before the controller that uses it).
+
+**Every agent ends with a machine-checkable status block** the orchestrator verifies cheaply (files exist, tallies match a quick re-run) instead of parsing prose:
+```
+FILES_TOUCHED: <list>
+TESTS: <cmd> -> <runs>/<assertions>/<failures>
+GATE: red|green
+UNVERIFIED: <anything not run this turn>
+```
+
+**Stories come from the Story Writer, gated.** Build from DoR-passing, source-cited cards (`@story-writer` + `dor_lint.rb`), not a re-derived reading — keeps iteration structure faithful and boundaries pinned. Intent precedence: **PRD/intent > human-in-chat > cited source (book) > existing app.**
+
+**Verification lives in structure, not memory.** The `Stop` verification-gate hook (Runbooks/Verification Gate Hook) enforces operator-task test + review before "done"; safety properties belong in named steps and agent definitions, never in one actor's vigilance.
+
 ## Key Design Principles
 
 - **Codebase Analysis First**: Each agent analyzes the target Rails project on first invocation to learn existing patterns

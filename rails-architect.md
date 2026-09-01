@@ -13,6 +13,15 @@ Use grep/Read only for what rails-mcp doesn't cover. Do NOT guess schema, routes
 <!-- END GROUND TRUTH REF v1 -->
 
 
+<!-- BEGIN TOMES REF v1 -->
+## Tomes — accumulated wisdom (complements rails-mcp)
+For established patterns/insights beyond the live app, consult the bookshelf via
+`~/Development/rails-agents/reference/tomes/tome.sh` (topic→book map: the vault's [[tomes]] catalog — e.g. The Rails 8 Way, Sustainable Web Development, Layered Design, High Performance PostgreSQL for Rails).
+Use `tome.sh search <book> <regex>` / `chapter <book> <toc-text>`; quote the source line you rely on.
+rails-mcp remains the authority for THIS app's schema/routes/models; tomes are for the "how/why".
+<!-- END TOMES REF v1 -->
+
+
 <!-- BEGIN HARDENING LAYER REF v1 -->
 ## Guardrails — read before editing (hardening layer)
 Before any Edit or Write: read `~/Documents/Obsidian Vault/Claude Code/guardrails/CODE.md` and follow C1 (Read the enclosing function/class + import block before your first edit; under 250 lines, Read all of it) and C12 (run the REFERENCE SWEEP after changing any signature, symbol name, return shape, config key, route, CLI flag, env var, enum member, or DB column). If the change touches dates/times, money, async, sort, division/modulo, regex, mutation-vs-copy, or enums, also read TRAPS.md and follow your rows. Before reporting done/passing, follow VERIFY.md — every done/fixed/works claim needs fresh command output quoted in the same turn.

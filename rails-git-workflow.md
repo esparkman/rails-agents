@@ -98,6 +98,15 @@ the repo's `git log` before defaulting.
 - **Blank line, then a body** explaining *what* and *why* when the change is non-obvious. Wrap
   at ~72 columns. Use bullet points for multi-part changes.
 - **Describe the change, not the process.** No "wip", "fix stuff", "update files", "changes".
+- **Shell-safe messages — never let the shell rewrite your text.** A commit subject like
+  `Enforce $0.01 minimum` inside double quotes becomes `Enforce /bin/zsh.01 minimum` — the
+  shell expands `$0`. The code is fine; the history is permanently wrong. So when a message
+  contains `$`, backticks, `!`, or `"`, **do not build it with `git commit -m "…"`.** Use one of:
+  - a here-doc via stdin: `git commit -F - <<'EOF'` … `EOF` (the quoted `'EOF'` disables expansion), or
+  - single quotes: `git commit -m 'Enforce $0.01 minimum price'`, or
+  - a message file: write it, then `git commit -F path/to/msg`.
+  After committing, **verify the subject with `git log -1 --format=%s` and confirm it reads
+  as intended** — this is part of the commit step, not optional.
 
 **MANDATORY — never mention AI assistance.** Commit messages and PR titles/bodies must never
 reference Claude, AI, agents, "Co-Authored-By" an assistant, "Generated with", or similar.
@@ -154,6 +163,17 @@ Add models (generated with AI assistance)
   `db:prepare`/`db:reset` will reload the stale schema instead. Once a migration is committed,
   never edit it; write a new one.
 - Use the `gh` CLI for all GitHub operations (PRs, issues, releases, repo creation).
+- **Sandbox ↔ git contract (prevents merge wedges).** The Bash sandbox denies writes under
+  `config/`. Any git op that *rewrites* a `config/` file — `checkout`, `merge`, `restore`, or a
+  `stash` pop that touches config — wedges the working tree: the commit is a safe git-index op,
+  but the working-tree update is a blocked `config/` write. **If the story touched any `config/`
+  file, run the `checkout`/`merge`/`restore` with the sandbox disabled from the start.** Wedge
+  recovery: `git checkout -- <config file>`, then re-run `git merge --no-ff` with the sandbox
+  off. (See the vault runbook: Runbooks/Sandbox-Git Wedge Recovery.)
+- **Never `git stash -u`, never `git clean`, never touch `.claude/`.** `.claude/agents/` holds
+  untracked symlinks (e.g. `story-writer.md`); `stash -u`/`clean` sweeps them and corrupts the
+  agent roster (recovery needs sandbox-off, since `.claude/agents` is deny-write). Stage explicit
+  pathspecs; never blanket-stash or clean the working tree.
 
 ## Output
 
