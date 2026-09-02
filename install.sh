@@ -68,7 +68,8 @@ wire_one() {
       echo "  settings.json: already wired"
     else
       echo "  settings.json: exists without the gate — not clobbering; add manually:"
-      echo "    \"command\": \"bash \\\"$hook_path\\\"\""
+      echo "    SessionStart -> bash \"$banner_path\""
+      echo "    Stop         -> bash \"$gate_path\""
     fi
   else
     local gate_cmd="bash \"$gate_path\"";     gate_cmd=${gate_cmd//\"/\\\"}
