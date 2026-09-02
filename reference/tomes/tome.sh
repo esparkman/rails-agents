@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # tome.sh — read the reference bookshelf (epubs) for agents, in place.
-# Scans several roots so books in the vault, Apple Books, and iCloud Drive are all
-# reachable WITHOUT copying. epub = zip; text is de-tagged on the way out.
+# Scans several roots so your books are reachable WITHOUT copying.
+# epub = zip; text is de-tagged on the way out.
 #
 #   tome.sh list                       # every epub across all roots
 #   tome.sh find <name>                # locate a book by fuzzy name
@@ -11,10 +11,23 @@
 #
 # <book> is a fuzzy name fragment (first match wins). Quote multi-word names.
 # Note: Apple Books *store purchases* are DRM'd and won't extract; sideloaded epubs are fine.
+#
+# BOOKS ARE NOT SHIPPED (they're copyrighted). Point at your own shelf with
+# TOMES_DIR (a colon-separated list of directories), e.g. in your shell rc or
+# settings.json env:  export TOMES_DIR="$HOME/books:$HOME/Documents/books"
+# The standard macOS locations below are also scanned when present.
 
 set -u
 
-ROOTS=(
+ROOTS=()
+# Your configured shelf (colon-separated), highest priority.
+if [ -n "${TOMES_DIR:-}" ]; then
+  IFS=':' read -r -a _tomes_dirs <<< "$TOMES_DIR"
+  ROOTS+=("${_tomes_dirs[@]}")
+fi
+# Standard fallbacks (scanned only if they exist; a recipient simply won't have
+# the project-specific shelf, so it's skipped there).
+ROOTS+=(
   "$HOME/Documents/Obsidian Vault/harness_engineering/Reference/books"
   "$HOME/Documents/books"
   "$HOME/Library/Mobile Documents/iCloud~com~apple~iBooks/Documents"
