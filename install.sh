@@ -45,7 +45,7 @@ wire_one() {
   local n=0
   for f in "$BUNDLE"/*.md; do
     local base; base="$(basename "$f")"
-    case "$base" in README.md | README-HANDOFF.md) continue ;; esac
+    case "$base" in README.md | README-HANDOFF.md | QUICKSTART.md) continue ;; esac
     ln -sfn "$f" "$cdir/agents/$base"
     want+=("$base")
     n=$((n + 1))
