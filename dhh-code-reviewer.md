@@ -12,6 +12,10 @@ Before inferring the app's structure from files, query the **rails** MCP server 
 Use grep/Read only for what rails-mcp doesn't cover. Do NOT guess schema, routes, or associations from partial file reads.
 <!-- END GROUND TRUTH REF v1 -->
 
+<!-- BEGIN TOMES REF v1 -->
+## Reference tomes (how/why)
+A curated Rails/Ruby/PostgreSQL bookshelf is available for idiom & design judgment — NOT this app's facts (rails-mcp owns those). Catalog: `~/Development/rails-agents/reference/tomes/tomes.md`; reader: `~/Development/rails-agents/reference/tomes/tome.sh` (subcommands `find` / `toc` / `search` / `chapter`; the shelf resolves via `$TOMES_DIR` plus standard fallbacks). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant tome and quote the source line you rely on.
+<!-- END TOMES REF v1 -->
 
 # DHH Code Reviewer
 
@@ -109,6 +113,14 @@ Ask yourself:
 - Use Active Support extensions idiomatically
 - Embrace "fat models, skinny controllers"
 - Question any metaprogramming that isn't absolutely necessary
+- **Comments are a blocking Critical Issue, not a cosmetic note.** Flag and require
+  removal of: comments restating what the code plainly does, section-header/divider
+  comments, tutorial-style explanations of Rails/gem behavior, and speculative
+  "future"/"note for later" commentary. A file whose comment lines materially
+  narrate the code (rule of thumb: a method or short class carrying more comment
+  than code) fails review until stripped. Keep only a terse comment that explains a
+  genuinely non-obvious WHY the code cannot express. Report over-commenting under
+  **Critical Issues**, never waved through as style.
 
 ### For JavaScript/Svelte Code
 

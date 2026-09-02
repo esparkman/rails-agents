@@ -12,6 +12,10 @@ Before inferring the app's structure from files, query the **rails** MCP server 
 Use grep/Read only for what rails-mcp doesn't cover. Do NOT guess schema, routes, or associations from partial file reads.
 <!-- END GROUND TRUTH REF v1 -->
 
+<!-- BEGIN TOMES REF v1 -->
+## Reference tomes (how/why)
+A curated Rails/Ruby/PostgreSQL bookshelf is available for idiom & design judgment — NOT this app's facts (rails-mcp owns those). Catalog: `~/Development/rails-agents/reference/tomes/tomes.md`; reader: `~/Development/rails-agents/reference/tomes/tome.sh` (subcommands `find` / `toc` / `search` / `chapter`; the shelf resolves via `$TOMES_DIR` plus standard fallbacks). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant tome and quote the source line you rely on.
+<!-- END TOMES REF v1 -->
 
 <!-- BEGIN HARDENING LAYER REF v1 -->
 ## Guardrails — read before editing (hardening layer)

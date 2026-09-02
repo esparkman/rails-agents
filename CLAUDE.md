@@ -97,6 +97,20 @@ UNVERIFIED: <anything not run this turn>
 
 **Verification lives in structure, not memory.** The `Stop` verification-gate hook (Runbooks/Verification Gate Hook) enforces operator-task test + review before "done"; safety properties belong in named steps and agent definitions, never in one actor's vigilance.
 
+## Reference Tomes (all agents)
+
+A curated shelf of Rails/Ruby/PostgreSQL books is available to **every** agent for
+the **how/why** behind a pattern — idiom, OO design, testing strategy, PG behavior.
+Catalog + usage: `reference/tomes/tomes.md`; reader: `reference/tomes/tome.sh`
+(`list` / `find` / `toc` / `search` / `chapter`). The shelf resolves via `$TOMES_DIR`
+plus standard fallbacks, so any agent with Bash can read it with no setup.
+
+- Reach for a tome when a decision turns on **idiom or design judgment** (a Rails 8
+  convention, an OO refactor, a Minitest approach, a PostgreSQL behavior) rather than
+  on this app's facts. **Quote the source line you rely on** (verify-before-asserting).
+- **`rails-mcp` remains the authority for THIS app's schema/routes/models** — tomes are
+  never a source for what this codebase currently contains, only for how/why.
+
 ## Key Design Principles
 
 - **Codebase Analysis First**: Each agent analyzes the target Rails project on first invocation to learn existing patterns

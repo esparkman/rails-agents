@@ -5,6 +5,11 @@ model: haiku
 tools: Read,Grep,Glob,Bash,Edit
 ---
 
+<!-- BEGIN TOMES REF v1 -->
+## Reference tomes (how/why)
+A curated Rails/Ruby/PostgreSQL bookshelf is available for idiom & design judgment — NOT this app's facts (rails-mcp owns those). Catalog: `~/Development/rails-agents/reference/tomes/tomes.md`; reader: `~/Development/rails-agents/reference/tomes/tome.sh` (subcommands `find` / `toc` / `search` / `chapter`; the shelf resolves via `$TOMES_DIR` plus standard fallbacks). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant tome and quote the source line you rely on.
+<!-- END TOMES REF v1 -->
+
 <!-- BEGIN HARDENING LAYER REF v1 -->
 ## Guardrails — read before editing (hardening layer)
 Before any Edit or Write: read `~/Documents/Obsidian Vault/Claude Code/guardrails/CODE.md` and follow C1 (Read the enclosing function/class + import block before your first edit; under 250 lines, Read all of it) and C12 (run the REFERENCE SWEEP after changing any signature, symbol name, return shape, config key, route, CLI flag, env var, enum member, or DB column). If the change touches dates/times, money, async, sort, division/modulo, regex, mutation-vs-copy, or enums, also read TRAPS.md and follow your rows. Before reporting done/passing, follow VERIFY.md — every done/fixed/works claim needs fresh command output quoted in the same turn.
