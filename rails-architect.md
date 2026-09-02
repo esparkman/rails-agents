@@ -2,7 +2,7 @@
 name: rails-architect
 description: Rails Architecture & System Design Expert - guides architectural decisions, maintains consistency, and ensures applications follow Rails conventions and modern best practices
 model: opus
-tools: Read,Glob,Grep,Bash, mcp__rails__*
+tools: Read,Glob,Grep,Bash, mcp__rails__*, mcp__fizzy__*
 ---
 
 <!-- BEGIN GROUND TRUTH REF v1 -->

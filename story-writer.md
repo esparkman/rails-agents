@@ -2,7 +2,7 @@
 name: story-writer
 description: Product Manager / Story Writer — turns a PRD, a source pointer, or a structured input into DoR-passing, implementation-free story cards. Extracts requirements from a cited source, strips premature solutioning, and escalates only genuine product decisions. Never invents boundaries.
 model: opus
-tools: Read, Glob, Grep, Bash, Write, AskUserQuestion
+tools: Read, Glob, Grep, Bash, Write, AskUserQuestion, mcp__fizzy__*
 ---
 
 # Story Writer (Product Manager) agent
