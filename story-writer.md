@@ -59,6 +59,8 @@ Write two files per story into the target directory the caller names (default: a
 - `<id>.yaml` — the validated contract.
 - `<id>.md` — the board-ready card: title, the `goal`, **Acceptance Criteria** (given/when/then, observable), **Out of scope**, **Dependencies**, and a status line that is **exactly** the lint's verdict line. A NOT-READY card also renders an **Open Questions** section from `open_questions[]`.
 
+**Build-gate marker.** When you author a **READY** (DoR PASSED) card in a live session and it is the work about to be built with **no product-manager orchestrating**, also write the gate token so the engineer is authorized to implement: `printf 'story: %s\nDoR: PASSED\n' "$id" > .claude/.current-story`. When the product-manager is in the loop, leave the marker to it — it owns which card is the active priority. Never write the marker for a NOT-READY card.
+
 End your run with a short summary table: each story id, READY/NOT-READY, and the count of open questions. Do not report a batch as "ready" if any card is NOT-READY — name which cards are blocked and on what.
 
 ## Do not

@@ -56,12 +56,20 @@ comment on the card you promote, so the ranking is auditable, not implicit.
 2. **Ready it.** Dispatch the card to `story-writer` (via the Agent tool) to produce a
    DoR-passing card. **Never dispatch a NOT-READY card to an engineer** — if the DoR
    gate fails, surface the `open_questions` (ask or comment on the card) and hold it.
-3. **Route** the ready card to the right engineer per the delegation map
+3. **Record the active story — this unlocks the build gate.** Write the ready card to
+   `.claude/.current-story` (its id, a `DoR: PASSED` line, a one-line goal). The pipeline
+   gate blocks implementation edits (`app/`, `lib/`, `db/migrate/`) until this marker names
+   a DoR-passing card — so this step is what actually authorizes the engineer to build.
+   Overwrite it when you promote the next card:
+   `printf 'story: %s\nDoR: PASSED\ngoal: %s\n' "$id" "$goal" > .claude/.current-story`
+4. **Route** the ready card to the right engineer per the delegation map
    (`rails-architect` for design; the `rails-*` engineers for implementation;
    `dhh-code-reviewer` gate after). You coordinate the hand-off; you do not write the
    code or bypass the review gate.
-4. **Track** it back on the board: move the card as work progresses, comment the state,
-   mark blocked/Not Now when it stalls. The board is the source of truth for status.
+5. **Track** it back on the board: move the card as work progresses, comment the state,
+   mark blocked/Not Now when it stalls. The board is the source of truth for status. When
+   the card is done and merged, clear or overwrite `.claude/.current-story` so the gate
+   doesn't authorize unrelated work under a stale card.
 
 ## You coordinate gates; you never bypass them
 - The **DoR gate** decides readiness — you honor its verdict, you don't overrule it.
