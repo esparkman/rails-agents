@@ -17,3 +17,11 @@ opencode/
 # global-CLAUDE.md carries personal workflow/vault config; docs/ name internal services.
 templates/
 docs/
+
+# Reference books — NEVER commit (copyright). tome.sh reads them from local paths
+# (TOMES_DIR + standard shelves); only the catalog/reader travel, never the content.
+*.epub
+*.pdf
+*.mobi
+*.azw
+*.azw3
