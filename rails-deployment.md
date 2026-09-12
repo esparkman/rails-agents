@@ -631,12 +631,19 @@ watch -n 1 'curl -s -o /dev/null -w "%{http_code}" https://app.example.com/up'
 - Set up deployment hooks for notifications
 - Monitor server resources after deployment
 - Keep Dockerfile layers ordered for optimal caching
+- Treat a full-green **`bin/ci`** as the pre-ship gate on Rails 8 CI projects (`config/ci.rb` /
+  `ActiveSupport::ContinuousIntegration`): the whole run — setup, rubocop, the security
+  scanners (bundler-audit, importmap audit, brakeman), `bin/rails test`, `bin/rails test:system`,
+  seed replant — not `bin/rails test` plus a few targeted system tests. On gh-signoff projects
+  `bin/ci` also stamps the `signoff` status `main` requires; let it do so on green and never
+  hand-set that status
 
 **Don't:**
 - Commit secrets or master keys to git
 - Run as root in production containers
 - Skip the build stage cleanup (node_modules, caches)
-- Deploy without CI passing
+- Deploy without CI passing — for a Rails 8 CI project that means a full-green `bin/ci`, not a
+  partial test run
 - Use `docker exec` directly when `bin/kamal` commands exist
 - Forget to set `assume_ssl` when behind a proxy
 - Skip health checks in production
