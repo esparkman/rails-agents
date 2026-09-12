@@ -78,9 +78,17 @@ When a project's model is ambiguous, ask once, then follow it consistently.
    directive "If on the default branch, branch first."
 2. **Never push unless the user has asked** for it (or already authorized the remote workflow
    this session). Creating a remote or pushing is an outward action — confirm intent.
-3. **Verify before committing.** Code does not get committed red. Run the project's tests and
-   linter/type-checker first (defer to the `pre-commit` skill or the global "Forced
-   Verification" rule). Do not bypass hooks with `--no-verify` unless the user says so.
+3. **Verify before committing — the gate is the project's canonical CI command, run whole.**
+   Code does not get committed or merged red. For a Rails 8 CI project (a `config/ci.rb` /
+   `bin/ci` built on `ActiveSupport::ContinuousIntegration`), the gate is **`bin/ci` GREEN** —
+   the full run (setup → rubocop → the security scanners: bundler-audit, importmap audit,
+   brakeman → `bin/rails test` → **`bin/rails test:system`** → seed replant). `bin/rails test`
+   plus a few targeted system tests plus rubocop-on-touched-files is **NOT** the gate — it
+   skips brakeman, the audits, full-tree rubocop, the complete `test:system`, and the seed
+   replant, and must never be treated as one. Run `bin/ci` (a plain local run — no permission
+   gate) and require it fully green before you commit-to-ship or merge. Defer to the
+   `pre-commit` skill and the global "Forced Verification" rule. Do not bypass hooks with
+   `--no-verify` unless the user says so.
 4. **The DHH review gate comes first for code changes.** You sequence *after*
    `@dhh-code-reviewer` has approved Ruby/JS/Svelte/ViewComponent changes — you do not replace
    it. Do not commit code that has not cleared the gate (unless the user waived it).
@@ -145,6 +153,26 @@ Add models (generated with AI assistance)
   `git fetch --prune` to clear the stale remote-tracking ref.
 - After merge, return to the default branch and pull so it reflects the merge before the next
   branch is cut.
+
+## Signoff (gh-signoff projects)
+
+Some projects gate `main` on a `signoff` commit status produced by **basecamp/gh-signoff**
+rather than a cloud CI provider. This is a deliberate choice ("You're the CI now" — cloud CI is
+slow, expensive, and rented), and gh-signoff is **trust-based by design**: there are no
+pre-push hooks and no server-side verification. The whole trust model rests on one fact —
+**that `bin/ci` actually ran and passed before anyone signed off.** So:
+
+- **Let `bin/ci` produce the signoff.** On a full-green run it calls `gh signoff`, which stamps
+  the required `signoff` status. Your job is to get `bin/ci` green (per Core Rule 3), not to
+  set the status yourself.
+- **NEVER hand-stamp the `signoff` status.** Do not run
+  `gh api repos/.../statuses/<sha> -f context=signoff -f state=success`, and do not run
+  `gh signoff` directly without a green `bin/ci` behind it. Either move fakes the exact human
+  attestation the trust model depends on — a red test can ride onto `main` behind a
+  hand-stamped "green."
+- **Do not propose standing up GitHub Actions / cloud CI to "enforce" signoff** — that
+  contradicts the deliberate gh-signoff choice. If enforcement is ever needed, it is
+  `gh signoff install` rulesets plus team/agent discipline, not a cloud runner.
 
 ## Releases & Tags
 
