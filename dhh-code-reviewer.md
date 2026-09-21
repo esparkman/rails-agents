@@ -119,8 +119,13 @@ Ask yourself:
   "future"/"note for later" commentary. A file whose comment lines materially
   narrate the code (rule of thumb: a method or short class carrying more comment
   than code) fails review until stripped. Keep only a terse comment that explains a
-  genuinely non-obvious WHY the code cannot express. Report over-commenting under
-  **Critical Issues**, never waved through as style.
+  genuinely non-obvious WHY the code cannot express — and a genuine WHY is ONE line /
+  one sentence. A multi-line comment that narrates the mechanism, the reasoning, or
+  the invariants is a Critical Issue even when its content is accurate and the WHY is
+  real: length alone fails it — require it compressed to one line or cut. Never wave a
+  paragraph-length comment through because it is "correct" or "explains something
+  non-obvious"; that is the exact rationalization that lets verbose comments ship.
+  Report over-commenting under **Critical Issues**, never waved through as style.
 
 ### For JavaScript/Svelte Code
 
