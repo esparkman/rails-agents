@@ -1,0 +1,12 @@
+{
+  "name": "rails-agents",
+  "description": "The rails-agents harness: a self-contained Rails development harness (specialist sub-agents, enforcement hooks, guardrail playbooks, PM delivery pipeline) installable as one Claude Code plugin.",
+  "owner": { "name": "esparkman", "url": "https://github.com/esparkman" },
+  "plugins": [
+    {
+      "name": "rails-agents",
+      "source": "./",
+      "description": "Rails development harness — specialist sub-agents, enforcement hooks, guardrail playbooks, and the PM delivery pipeline."
+    }
+  ]
+}

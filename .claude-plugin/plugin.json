@@ -1,0 +1,10 @@
+{
+  "name": "rails-agents",
+  "description": "Rails development harness: specialist sub-agents, enforcement hooks (SessionStart status banner, Stop verification gate, PreToolUse pipeline gate), guardrail playbooks, and the PM delivery pipeline.",
+  "version": "0.1.0",
+  "author": { "name": "esparkman", "url": "https://github.com/esparkman" },
+  "homepage": "https://github.com/esparkman/rails-agents",
+  "repository": "https://github.com/esparkman/rails-agents",
+  "license": "MIT",
+  "hooks": "./hooks/hooks.json"
+}
