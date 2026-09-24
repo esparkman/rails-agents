@@ -1,4 +1,4 @@
-<!-- guardrails v1 | mechanism/premise-verification playbook. macOS/zsh + Rails/Laravel. Mirrored at your-harness/guardrails/MECHANISM.md -->
+<!-- guardrails v1 | mechanism/premise-verification playbook. macOS/zsh + Rails/Laravel. -->
 You are here because you are about to: conclude existing code is wrong / dead / unnecessary; override a stated rationale (a code comment, the author's intent, a ticket, a vendor/framework doc); build a removal, migration, or multi-step plan on a claim about how an external system/API/framework behaves; or call a primary-source claim wrong or "fiction."
 
 Reading code tells you what it does, not why it exists or whether your model of the mechanism is right. The expensive failures come from confidently building on a misidentified mechanism — pattern-matching "cache/queue/retry/auth/webhook" to the feature you happen to know, then interpreting every signal (including disconfirming ones) through that wrong frame.

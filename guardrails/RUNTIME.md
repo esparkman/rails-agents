@@ -1,4 +1,4 @@
-<!-- guardrails v1 | runtime-verification playbook. macOS/zsh + Rails/Laravel. Mirrored at your-harness/guardrails/RUNTIME.md -->
+<!-- guardrails v1 | runtime-verification playbook. macOS/zsh + Rails/Laravel. -->
 You are here because you are about to describe a code path as live/running, blame it for a production symptom, size its cost/impact/priority, or scope work around it as a current problem.
 
 Reading code tells you what CAN run, not what DOES. Liveness, volume, and cost are runtime facts — confirm them before you assert them. A dormant path (flag off, route disabled, job unscheduled, integration not turned on) has zero impact today no matter how the code reads.
@@ -9,7 +9,7 @@ Echo protocol: for each item write one line — `R<n>: PASS — <source> -> <quo
 - R2. Attribution: before pinning a prod symptom (cost spike, error, latency) on a specific path, confirm that path carries the traffic — not a sibling with the same shape. Name the exact action/endpoint/job you checked and its figure.
 - R3. Sizing: before quoting a cost/impact/frequency, cite the number's source (usage/cost dashboard, APM, a COUNT query) and its window. No source -> state it as an estimate bounded by a stated ceiling, never as fact.
 - R4. Split the two claims: write "Exists in code: <file:line>" and "Runs in prod: <figure + window>" as SEPARATE lines. A cost/priority claim inherits the weaker of the two. "0 traffic" is a valid, in-voice answer for the second line.
-- R5. Source of truth (this shop): AppSignal -> Performance -> Actions throughput per action (example prod site `APP_ID`); the org usage/cost dashboard (`usage-dashboard`) for Anthropic spend; `Delayed::Job` / GoodJob tables for job-run counts. Prefer these over inference from the code.
+- R5. Source of truth (configure for your shop): your APM's per-action throughput (e.g. AppSignal -> Performance -> Actions for your prod app); your org's usage/cost dashboard for LLM/API spend; the background-job tables (`Delayed::Job` / GoodJob / Solid Queue) for job-run counts. Prefer these over inference from the code.
 
 --- reference ---
 
