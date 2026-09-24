@@ -12,7 +12,9 @@ shopt -s nullglob
 repo="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 cd "$repo" 2>/dev/null || true
 
-global="$HOME/.claude/CLAUDE.md"
+# Honor the active config home so a work session (CLAUDE_CONFIG_DIR=~/.claude-work)
+# reports the work global, not the personal ~/.claude one — no cross-config bleed.
+global="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/CLAUDE.md"
 if [ -f "$global" ]; then
   g="present ($(wc -l < "$global" | tr -d ' ') lines)"
 else
