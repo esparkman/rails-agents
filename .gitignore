@@ -15,8 +15,14 @@ opencode/
 
 # Personal layer — never push to this PUBLIC repo. Handed off privately.
 # global-CLAUDE.md carries personal workflow/vault config; docs/ name internal services.
+# codex/templates/global-AGENTS.md is the Codex twin — same personal voice/comms/vault.
 templates/
 docs/
+codex/templates/
+
+# Python bytecode (codex/ tooling)
+__pycache__/
+*.pyc
 
 # Reference books — NEVER commit (copyright). tome.sh reads them from local paths
 # (TOMES_DIR + standard shelves); only the catalog/reader travel, never the content.
