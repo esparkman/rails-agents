@@ -35,7 +35,9 @@ else
   a="none (delegation OFF)"
 fi
 
-if grep -q verification_gate .claude/settings.json 2>/dev/null; then
+# Check both settings files — hooks may be wired machine-locally (settings.local.json),
+# e.g. in a shared repo where committing $HOME hook paths isn't wanted.
+if grep -qs verification_gate .claude/settings.json .claude/settings.local.json 2>/dev/null; then
   h="armed"
 else
   h="not installed"
