@@ -4,10 +4,10 @@
 # Usage: ./install.sh <target-repo> [<target-repo> ...]
 #
 # Portable: resolves this bundle's own location, so it works no matter where you
-# cloned rails-agents. For each target it (re)creates the agent symlinks, writes
-# .claude/settings.json with the verification-gate Stop hook, and appends the
-# harness .gitignore lines. Safe to re-run; never clobbers a settings.json that
-# already defines other hooks.
+# cloned rails-agents. For each target it (re)creates the agent symlinks, wires the
+# three hooks into the machine-local .claude/settings.local.json (gitignored — never
+# committed, so a shared repo doesn't auto-run per-developer external scripts), and
+# appends the harness .gitignore lines. Safe to re-run; preserves other keys.
 
 set -euo pipefail
 
@@ -26,8 +26,8 @@ PIPELINE="$BUNDLE/reference/hooks/pipeline_gate.sh"
 [ -f "$GATE" ] || { echo "error: hook not found at $GATE — is this the rails-agents bundle?" >&2; exit 1; }
 [ "$#" -ge 1 ] || { echo "usage: $0 <target-repo> [<target-repo> ...]" >&2; exit 1; }
 
-# Prefer a $HOME-relative hook path so a committed settings.json stays portable
-# across machines that clone the bundle to the same spot under home.
+# Prefer a $HOME-relative hook path so settings.local.json stays portable across a
+# developer's own machines that clone the bundle to the same spot under home.
 homerel() { case "$1" in "$HOME"/*) printf '$HOME/%s' "${1#"$HOME"/}";; *) printf '%s' "$1";; esac; }
 gate_path="$(homerel "$GATE")"
 banner_path="$(homerel "$BANNER")"
@@ -91,10 +91,13 @@ open(p, "w").write(cur)
 print("  .claude/agents/.gitignore: managing %d bundle symlink(s)" % len(names))
 PY
 
-  # 2. settings.json — ensure all three hooks are present, preserving other keys.
-  #    Merges into an existing settings.json (older installs, a custom model override)
-  #    rather than skipping it, so re-running brings any repo to the full hook set.
-  local settings="$cdir/settings.json"
+  # 2. settings.local.json — ensure all three hooks are present, preserving other keys.
+  #    Hooks go in the machine-local, gitignored settings.local.json (NOT a committed
+  #    settings.json): they run per-developer shell from $HOME/Development/rails-agents,
+  #    so committing them to a shared repo would auto-execute unversioned external code on
+  #    every teammate's checkout. Machine-local keeps the harness opt-in (each dev runs
+  #    install.sh). Merges into an existing file, so re-running brings a repo to the full set.
+  local settings="$cdir/settings.local.json"
   python3 - "$settings" "$banner_path" "$gate_path" "$pipeline_path" <<'PY'
 import json, os, sys
 p, banner, gate, pipeline = sys.argv[1:5]
@@ -111,7 +114,7 @@ if not has("PreToolUse", "pipeline_gate"):
     h.setdefault("PreToolUse", []).append({"matcher": "Edit|Write|MultiEdit|NotebookEdit", "hooks": [{"type": "command", "command": f'bash "{pipeline}"'}]}); changed.append("PreToolUse pipeline gate (warn)")
 with open(p, "w") as f:
     json.dump(s, f, indent=2); f.write("\n")
-print("  settings.json: " + ("added " + ", ".join(changed) if changed else "all hooks present"))
+print("  settings.local.json: " + ("added " + ", ".join(changed) if changed else "all hooks present"))
 PY
 
   # 3. .gitignore harness block (session-local markers + machine-local settings).
