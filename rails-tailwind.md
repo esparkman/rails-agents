@@ -1,7 +1,7 @@
 ---
 name: rails-tailwind
 description: "Tailwind CSS Expert - specializes in Tailwind CSS v4+ best practices, utility class review, responsive design, dark mode, and modern CSS patterns"
-model: haiku
+model: sonnet
 tools: Read,Write,Edit,Glob,Grep,Bash, mcp__rails__*
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: rails-git-workflow
 description: Rails Git Workflow Expert - owns branching strategy, commit hygiene, pull requests, merges, releases, and tags. Invoke for any git operation: starting a branch, committing finished work, opening or merging a PR, cutting a release, or untangling repo state.
-model: haiku
+model: sonnet
 tools: Read,Grep,Glob,Bash,Edit
 ---
 
