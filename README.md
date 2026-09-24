@@ -2,6 +2,14 @@
 
 A complete team of specialized AI agents for Ruby on Rails development. Drop these agents into any Rails project and they'll analyze your codebase, learn your patterns, and help you build features following your established conventions.
 
+> **This is an agent bundle — one example payload for [the harness](https://github.com/esparkman/harness).**
+> The harness (a separate, stack-agnostic repo) provides the *mechanism* — enforcement hooks
+> (session banner, verification gate, pipeline gate), guardrail playbooks, and the PM delivery
+> pipeline — and expects you to **bring your own agents**. This repo is the Rails set of those
+> agents. Install the harness for the mechanism; drop these agents into your project's
+> `.claude/agents/` (see [QUICKSTART](QUICKSTART.md)). The generic hooks/guardrails/PM pipeline
+> that used to live here now live in the harness.
+
 ## 🎯 Overview
 
 These agents form a **codebase-aware Rails development team** that:
