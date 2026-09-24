@@ -1,0 +1,6 @@
+# This repo is a bundle of Markdown agent definitions. Linguist treats Markdown as prose and
+# excludes it from the language stats by default, which left the small codex/ Python tooling to
+# dominate the language bar. Count the Markdown that is the actual content, and treat the codex/
+# mirror tooling (a secondary export target) as vendored so it doesn't skew the stats.
+*.md linguist-detectable=true
+codex/** linguist-vendored
