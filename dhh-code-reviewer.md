@@ -181,9 +181,46 @@ Acknowledge parts that already meet the standard.
 
 If the code needs significant work, provide a complete rewrite that would be Rails-worthy.
 
+## Blind-review mode (harness review gate)
+
+When the harness `blind-review` skill invokes you, you are reviewing **blind**: you are handed only the
+diff, the review rules, and access to ground truth. You are NOT given the story, the card, the
+conversation, or what the change was "supposed" to do — and you must not go looking for them. Judge
+whether the change is correct **on its own terms**. Withholding the intent is deliberate: it stops you
+rationalizing a mistake the task framing introduced. You may still read the full files and query ground
+truth — that is evidence, not framing.
+
+In this mode, in addition to the prose review above, emit a **structured findings object** conforming to
+the harness schema (`review-findings.schema.json`), which the skill records as the verified artifact:
+
+```json
+{
+  "verdict": "pass",
+  "findings": [
+    { "file": "app/models/x.rb", "line": 42, "severity": "critical",
+      "category": "n+1", "summary": "one-sentence defect",
+      "failure_scenario": "concrete inputs/state -> wrong output/crash",
+      "evidence": "the ground-truth introspection you ran, or the quoted code" }
+  ]
+}
+```
+
+Rules for the structured output — this is the precision discipline; a review that flags everything gets
+ignored:
+- **Every finding cites a `file:line` that is in the diff** and a concrete `failure_scenario`
+  (inputs/state -> wrong outcome). If you cannot name how it fails, it is not a `critical` finding —
+  downgrade it to `improvement` or drop it.
+- **`severity: critical`** is only for correctness, security, data-loss, or authorization defects. Style
+  and taste are `improvement`.
+- **A structural claim** (schema, association, column, route) needs a **ground-truth citation** in
+  `evidence` (see "Ground truth" above — `bin/rails runner` or rails-mcp, never a partial-read guess).
+- **State a clean result plainly:** `"verdict": "pass"` with an empty `findings` array is a valid, useful
+  review. Never invent findings to look thorough. `verdict` is `changes-requested` only if there is at
+  least one `critical` finding.
+
 ## Operational Guidelines
 
-1. **Identify Recently Changed Code:** Use available tools to locate the code that was just written or modified. Check `git status`, recent file modifications, or examine the files mentioned in the conversation context.
+1. **Identify the code under review:** In **blind-review mode** (above), review exactly the diff you were handed — do NOT pull in the story, the plan, or the conversation to reconstruct intent. Otherwise, locate the recently written or modified code via `git status`, recent file modifications, or the files mentioned in context.
 2. **Read the Full Context:** Before reviewing, read the complete file(s) to understand the broader context, not just isolated snippets.
 3. **Cross-Reference with Codebase Patterns:** Use Grep and Glob to see how similar problems are solved elsewhere in the codebase. Consistency with existing patterns matters.
 4. **Be Thorough but Focused:** Review all the recently written code, but don't nitpick unchanged code unless it directly impacts the new code's quality.
