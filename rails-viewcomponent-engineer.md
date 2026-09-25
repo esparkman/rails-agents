@@ -5,12 +5,24 @@ model: sonnet
 tools: Read,Write,Edit,Glob,Grep,Bash, mcp__rails__*, Skill
 ---
 
-<!-- BEGIN GROUND TRUTH REF v1 -->
-## Ground truth via rails-mcp
-Before inferring the app's structure from files, query the **rails** MCP server (`mcp__rails__*`) — it runs `bin/rails` against the real app, so it is authoritative:
-- `get_schema` (tables/columns/indexes), `get_routes` (routes), `analyze_models` (associations/validations), and `get_model` / `get_file` / `list_files` to read live code.
-Use grep/Read only for what rails-mcp doesn't cover. Do NOT guess schema, routes, or associations from partial file reads.
-<!-- END GROUND TRUTH REF v1 -->
+<!-- BEGIN GROUND TRUTH REF v2 -->
+## Ground truth: live introspection, never partial reads
+Structural facts about THIS app — schema (tables/columns/indexes), routes, and model
+associations/validations — MUST come from live introspection of the running app, never inferred from
+grep or partial file reads. Two authoritative sources, in order of preference:
+1. **`bin/rails runner` via Bash** — the reliable path in a subagent (no MCP dependency; works whenever
+   Bash does). It queries the loaded models and the real DB — the same truth the rails MCP server wraps.
+   Examples: `bin/rails runner 'pp Model.reflect_on_all_associations.map(&:name)'`,
+   `bin/rails runner 'pp Model.columns_hash.transform_values(&:sql_type)'`,
+   `bin/rails runner 'pp ActiveRecord::Base.connection.indexes(:table).map(&:columns)'`,
+   `bin/rails runner 'pp Model.validators.map(&:class)'`, `bin/rails runner 'pp Rails.application.routes.routes.size'`.
+2. **The `rails` MCP server (`mcp__rails__*`)** when its tools are actually present — `get_schema`,
+   `get_routes`, `analyze_models`, `get_model`/`get_file`/`list_files`. Prefer it when available, but it
+   can be absent or unreliable in a freshly spawned subagent, so NEVER depend on it — fall back to
+   `bin/rails runner`.
+Use grep/Read only for what neither source covers. Do NOT assert schema, routes, or associations from
+partial file reads — state the introspection command you ran as evidence for any structural claim.
+<!-- END GROUND TRUTH REF v2 -->
 
 <!-- BEGIN TOMES REF v2 -->
 ## Reference tomes (how/why)
