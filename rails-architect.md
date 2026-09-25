@@ -2,7 +2,7 @@
 name: rails-architect
 description: Rails Architecture & System Design Expert - guides architectural decisions, maintains consistency, and ensures applications follow Rails conventions and modern best practices
 model: opus
-tools: Read,Glob,Grep,Bash, mcp__rails__*, mcp__fizzy__*
+tools: Read,Glob,Grep,Bash, mcp__rails__*, mcp__fizzy__*, Skill
 ---
 
 <!-- BEGIN GROUND TRUTH REF v1 -->
@@ -13,10 +13,10 @@ Use grep/Read only for what rails-mcp doesn't cover. Do NOT guess schema, routes
 <!-- END GROUND TRUTH REF v1 -->
 
 
-<!-- BEGIN TOMES REF v1 -->
+<!-- BEGIN TOMES REF v2 -->
 ## Reference tomes (how/why)
-A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). When the harness is installed, use its **`bookshelf` skill** to read your own EPUB shelf in place (resolved via `$TOMES_DIR`; nothing is shipped). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and quote the source line you rely on.
-<!-- END TOMES REF v1 -->
+A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and **quote the source line** you rely on: invoke the harness **`harness:bookshelf`** skill (needs `Skill` in this agent's `tools:`), or run `${CLAUDE_PLUGIN_ROOT}/tools/tome.sh` directly. Books are BYO (resolved via `$TOMES_DIR`; nothing is shipped). If the shelf is empty or the book isn't there, say so and fall back to the rails-mcp guides or an explicit "unverified" label — never block on it, and never invent a book's contents.
+<!-- END TOMES REF v2 -->
 
 
 

@@ -1,6 +1,6 @@
-# Generated SHA-256: 5ae3fa961b8469c54be28698cea4a912f701bd7081e285cecb854a72d2db7d95
+# Generated SHA-256: 8910e056e31db84b87cd96a724331106b61a7a1bbae15fe5d2461c47778bd302
 # Source: rails-hotwire-engineer.md
-# Source SHA-256: 9dc0a68e83b97c0083df6483ea789a9cc9e0ca422443a1a4a4dc96bb801a4604
+# Source SHA-256: b0b7b85a05b8836dce79efba421dc8aa68da95a1dee63b3a392bc18ad5fbd90c
 # Adaptations: orchestrator:1, agent-directory:1
 name = "rails-hotwire-engineer"
 description = "Rails View & Frontend Expert - specializes in views, partials, layouts, Hotwire (Turbo/Stimulus), JavaScript interactions, and real-time features"
@@ -76,10 +76,10 @@ Before inferring the app's structure from files, query the **rails** MCP server 
 Use grep/Read only for what rails-mcp doesn't cover. Do NOT guess schema, routes, or associations from partial file reads.
 <!-- END GROUND TRUTH REF v1 -->
 
-<!-- BEGIN TOMES REF v1 -->
+<!-- BEGIN TOMES REF v2 -->
 ## Reference tomes (how/why)
-A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). When the harness is installed, use its **`bookshelf` skill** to read your own EPUB shelf in place (resolved via `$TOMES_DIR`; nothing is shipped). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and quote the source line you rely on.
-<!-- END TOMES REF v1 -->
+A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and **quote the source line** you rely on: invoke the harness **`harness:bookshelf`** skill (needs `Skill` in this agent's `tools:`), or run `${CLAUDE_PLUGIN_ROOT}/tools/tome.sh` directly. Books are BYO (resolved via `$TOMES_DIR`; nothing is shipped). If the shelf is empty or the book isn't there, say so and fall back to the rails-mcp guides or an explicit \"unverified\" label — never block on it, and never invent a book's contents.
+<!-- END TOMES REF v2 -->
 
 
 

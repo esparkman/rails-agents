@@ -1,6 +1,6 @@
-# Generated SHA-256: 9dcc826f7455dd0b8da75b921c76f820180965d7a8b0b26589016babfc36efa3
+# Generated SHA-256: 0ada194357f28a546ad0cb3ad5b96ab0572352233461bf090a77d5154b069e1d
 # Source: rails-qa.md
-# Source SHA-256: a4a6bde612aa517d1d219cb3e2e6988180df2b67c5f138c73cb07493a5e53491
+# Source SHA-256: 240d4ecec943ff7af20d462425455c80cf22d8b02b760ea9c93baebd6f1fbf4a
 # Adaptations: project-instructions:1, browser-capabilities:1
 name = "rails-qa"
 description = "Black-box acceptance & exploratory QA expert. Drives the RUNNING app as a real operator (browser automation + HTTP), walks operator journeys, files defects with repro steps + screenshots, and maintains a living QA-checklist note in the project's Obsidian vault. Distinct from rails-testing-expert (which writes white-box tests); this agent never modifies application code — it verifies the shipped behavior an operator actually experiences."
@@ -67,10 +67,10 @@ to persist/open them when permissions or browser control are unavailable.
 
 ## Adapted source guidance
 
-<!-- BEGIN TOMES REF v1 -->
+<!-- BEGIN TOMES REF v2 -->
 ## Reference tomes (how/why)
-A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). When the harness is installed, use its **`bookshelf` skill** to read your own EPUB shelf in place (resolved via `$TOMES_DIR`; nothing is shipped). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and quote the source line you rely on.
-<!-- END TOMES REF v1 -->
+A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and **quote the source line** you rely on: invoke the harness **`harness:bookshelf`** skill (needs `Skill` in this agent's `tools:`), or run `${CLAUDE_PLUGIN_ROOT}/tools/tome.sh` directly. Books are BYO (resolved via `$TOMES_DIR`; nothing is shipped). If the shelf is empty or the book isn't there, say so and fall back to the rails-mcp guides or an explicit \"unverified\" label — never block on it, and never invent a book's contents.
+<!-- END TOMES REF v2 -->
 
 
 

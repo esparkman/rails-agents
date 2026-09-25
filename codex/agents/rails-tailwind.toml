@@ -1,6 +1,6 @@
-# Generated SHA-256: 9ce3d1d2a42dc912c2d4b27fbafecf0c59209c6ca6fcb1861191f321c962189c
+# Generated SHA-256: 7fff96a0ad62aad37b34b4de71ba9d1fc0072df0789fe23180e54a026f615d84
 # Source: rails-tailwind.md
-# Source SHA-256: 36700ff58b8c6957a5f48943afa0e4979852004731504ae585b28785cef9f3c2
+# Source SHA-256: 6cc9f99a343115b45867435be3caa372fa9b87eb07ee27958b5c7f6506b8bc24
 # Adaptations: runtime-contract-only
 name = "rails-tailwind"
 description = "\"Tailwind CSS Expert - specializes in Tailwind CSS v4+ best practices, utility class review, responsive design, dark mode, and modern CSS patterns\""
@@ -76,10 +76,10 @@ Before inferring the app's structure from files, query the **rails** MCP server 
 Use grep/Read only for what rails-mcp doesn't cover. Do NOT guess schema, routes, or associations from partial file reads.
 <!-- END GROUND TRUTH REF v1 -->
 
-<!-- BEGIN TOMES REF v1 -->
+<!-- BEGIN TOMES REF v2 -->
 ## Reference tomes (how/why)
-A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). When the harness is installed, use its **`bookshelf` skill** to read your own EPUB shelf in place (resolved via `$TOMES_DIR`; nothing is shipped). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and quote the source line you rely on.
-<!-- END TOMES REF v1 -->
+A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and **quote the source line** you rely on: invoke the harness **`harness:bookshelf`** skill (needs `Skill` in this agent's `tools:`), or run `${CLAUDE_PLUGIN_ROOT}/tools/tome.sh` directly. Books are BYO (resolved via `$TOMES_DIR`; nothing is shipped). If the shelf is empty or the book isn't there, say so and fall back to the rails-mcp guides or an explicit \"unverified\" label — never block on it, and never invent a book's contents.
+<!-- END TOMES REF v2 -->
 
 
 

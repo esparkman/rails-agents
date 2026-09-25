@@ -1,6 +1,6 @@
-# Generated SHA-256: 220d13637bb8e34f3f0d07cdf9af12348b1cc0f8dba84248ecffc45699767ea7
+# Generated SHA-256: a11be446d87e8223b94c117936393ac67bb89723a21b2db99e52e4432fee3adf
 # Source: rails-deployment.md
-# Source SHA-256: 2fb7dd1021340286130cfca325527cdae11134486eb277391d1dd4366208bd31
+# Source SHA-256: bab78e0befcd48b0385f522bf2acc1370987e23f45186616b48f899543c365de
 # Adaptations: orchestrator:1, agent-directory:1
 name = "rails-deployment"
 description = "Rails Deployment & Infrastructure Expert - specializes in Kamal, Docker, production configuration, environment management, and server operations"
@@ -76,10 +76,10 @@ Before inferring the app's structure from files, query the **rails** MCP server 
 Use grep/Read only for what rails-mcp doesn't cover. Do NOT guess schema, routes, or associations from partial file reads.
 <!-- END GROUND TRUTH REF v1 -->
 
-<!-- BEGIN TOMES REF v1 -->
+<!-- BEGIN TOMES REF v2 -->
 ## Reference tomes (how/why)
-A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). When the harness is installed, use its **`bookshelf` skill** to read your own EPUB shelf in place (resolved via `$TOMES_DIR`; nothing is shipped). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and quote the source line you rely on.
-<!-- END TOMES REF v1 -->
+A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and **quote the source line** you rely on: invoke the harness **`harness:bookshelf`** skill (needs `Skill` in this agent's `tools:`), or run `${CLAUDE_PLUGIN_ROOT}/tools/tome.sh` directly. Books are BYO (resolved via `$TOMES_DIR`; nothing is shipped). If the shelf is empty or the book isn't there, say so and fall back to the rails-mcp guides or an explicit \"unverified\" label — never block on it, and never invent a book's contents.
+<!-- END TOMES REF v2 -->
 
 
 

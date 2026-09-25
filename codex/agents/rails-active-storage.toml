@@ -1,6 +1,6 @@
-# Generated SHA-256: 1232012eca021b7bc40df665b40fbf6ddd0c3cc115c5c0fa74fc87d4fe44f641
+# Generated SHA-256: 93e4c98f18400075b10e4b58bb2b6c5cde66ec3f895a67b670637bc252def05c
 # Source: rails-active-storage.md
-# Source SHA-256: 0836d72d191b93986a0f76d3ae54e33935580702ce9bb19fc00ed6c907e454bb
+# Source SHA-256: 741b67e38489618f57e7e6532fa9f8929ab43976a475616dfec05baa65b59b0a
 # Adaptations: orchestrator:1, agent-directory:1
 name = "rails-active-storage"
 description = "Rails Active Storage Expert - specializes in file uploads, image variants, direct uploads, cloud storage configuration, and attachment patterns"
@@ -76,10 +76,10 @@ Before inferring the app's structure from files, query the **rails** MCP server 
 Use grep/Read only for what rails-mcp doesn't cover. Do NOT guess schema, routes, or associations from partial file reads.
 <!-- END GROUND TRUTH REF v1 -->
 
-<!-- BEGIN TOMES REF v1 -->
+<!-- BEGIN TOMES REF v2 -->
 ## Reference tomes (how/why)
-A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). When the harness is installed, use its **`bookshelf` skill** to read your own EPUB shelf in place (resolved via `$TOMES_DIR`; nothing is shipped). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and quote the source line you rely on.
-<!-- END TOMES REF v1 -->
+A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and **quote the source line** you rely on: invoke the harness **`harness:bookshelf`** skill (needs `Skill` in this agent's `tools:`), or run `${CLAUDE_PLUGIN_ROOT}/tools/tome.sh` directly. Books are BYO (resolved via `$TOMES_DIR`; nothing is shipped). If the shelf is empty or the book isn't there, say so and fall back to the rails-mcp guides or an explicit \"unverified\" label — never block on it, and never invent a book's contents.
+<!-- END TOMES REF v2 -->
 
 
 
