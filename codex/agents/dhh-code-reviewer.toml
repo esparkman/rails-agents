@@ -1,6 +1,6 @@
-# Generated SHA-256: f640ad9841ff80479b8fef5abbb1394b7fd1d63b0387fa58d53b47e0473d993f
+# Generated SHA-256: 4efb5a4415804e26a95fcff2aa1ed5d2030bb8b00cb9ba4c488e830d7402e1fc
 # Source: dhh-code-reviewer.md
-# Source SHA-256: 1a5a37763fa66652e11b4762933e05a68d7d3e25c6a6b294cc32c7027d3e14b2
+# Source SHA-256: c893dd7fe6daf0029b8e3a3e97286a531d455c88750258e6291a6f894a3ce84c
 # Adaptations: runtime-contract-only
 name = "dhh-code-reviewer"
 description = "Elite code reviewer channeling DHH's exacting standards. Invoke after writing or modifying Ruby/Rails or JavaScript/Svelte code to ensure it meets the highest standards of elegance, expressiveness, and idiomatic style."
@@ -76,10 +76,10 @@ Before inferring the app's structure from files, query the **rails** MCP server 
 Use grep/Read only for what rails-mcp doesn't cover. Do NOT guess schema, routes, or associations from partial file reads.
 <!-- END GROUND TRUTH REF v1 -->
 
-<!-- BEGIN TOMES REF v1 -->
+<!-- BEGIN TOMES REF v2 -->
 ## Reference tomes (how/why)
-A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). When the harness is installed, use its **`bookshelf` skill** to read your own EPUB shelf in place (resolved via `$TOMES_DIR`; nothing is shipped). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and quote the source line you rely on.
-<!-- END TOMES REF v1 -->
+A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and **quote the source line** you rely on: invoke the harness **`harness:bookshelf`** skill (needs `Skill` in this agent's `tools:`), or run `${CLAUDE_PLUGIN_ROOT}/tools/tome.sh` directly. Books are BYO (resolved via `$TOMES_DIR`; nothing is shipped). If the shelf is empty or the book isn't there, say so and fall back to the rails-mcp guides or an explicit \"unverified\" label — never block on it, and never invent a book's contents.
+<!-- END TOMES REF v2 -->
 
 
 # DHH Code Reviewer

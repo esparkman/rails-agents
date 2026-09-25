@@ -1,6 +1,6 @@
-# Generated SHA-256: af0ec5a12b29d1790aaf22e319364f82977aad327c0fc465e267e9e16f7f2c7b
+# Generated SHA-256: 6f7d628d47c45f048208874500fc363b02647bdeb73ada60b4dfdd9a9a636ae3
 # Source: rails-domain-logic.md
-# Source SHA-256: d4db8f19fa876d96435bed65a971f53703bb8fd9e46eec71ed1df6bcafd984dd
+# Source SHA-256: 97658a0221a0946f809545fe96d4fc102a7258d26e6d705b4030325b5f4bb5fa
 # Adaptations: orchestrator:1, agent-directory:1
 name = "rails-domain-logic"
 description = "Rails Domain Logic Expert - specializes in service objects, form objects, query objects, POROs, and rich domain model patterns"
@@ -76,10 +76,10 @@ Before inferring the app's structure from files, query the **rails** MCP server 
 Use grep/Read only for what rails-mcp doesn't cover. Do NOT guess schema, routes, or associations from partial file reads.
 <!-- END GROUND TRUTH REF v1 -->
 
-<!-- BEGIN TOMES REF v1 -->
+<!-- BEGIN TOMES REF v2 -->
 ## Reference tomes (how/why)
-A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). When the harness is installed, use its **`bookshelf` skill** to read your own EPUB shelf in place (resolved via `$TOMES_DIR`; nothing is shipped). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and quote the source line you rely on.
-<!-- END TOMES REF v1 -->
+A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and **quote the source line** you rely on: invoke the harness **`harness:bookshelf`** skill (needs `Skill` in this agent's `tools:`), or run `${CLAUDE_PLUGIN_ROOT}/tools/tome.sh` directly. Books are BYO (resolved via `$TOMES_DIR`; nothing is shipped). If the shelf is empty or the book isn't there, say so and fall back to the rails-mcp guides or an explicit \"unverified\" label — never block on it, and never invent a book's contents.
+<!-- END TOMES REF v2 -->
 
 
 

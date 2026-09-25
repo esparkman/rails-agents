@@ -1,6 +1,6 @@
-# Generated SHA-256: 8970fc85cd98c068bae503614cf2dcec57c82559bf12171399e56fd8982115df
+# Generated SHA-256: c5124ba33c5b206445ee2e3e39a7a62b971448069b1d7eec106ed360e5ffca27
 # Source: rails-mailer.md
-# Source SHA-256: df564a69b5a371eace0747d174e9baa3b0e60063f52209ea563fd2128aa87228
+# Source SHA-256: af6f18bf4474bc922ece39b1e3b18f44f71bdd3e6604912438afa86ba2851456
 # Adaptations: orchestrator:1, agent-directory:1
 name = "rails-mailer"
 description = "Rails Mailer Expert - specializes in Action Mailer, email templates, previews, delivery configuration, and transactional email patterns"
@@ -76,10 +76,10 @@ Before inferring the app's structure from files, query the **rails** MCP server 
 Use grep/Read only for what rails-mcp doesn't cover. Do NOT guess schema, routes, or associations from partial file reads.
 <!-- END GROUND TRUTH REF v1 -->
 
-<!-- BEGIN TOMES REF v1 -->
+<!-- BEGIN TOMES REF v2 -->
 ## Reference tomes (how/why)
-A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). When the harness is installed, use its **`bookshelf` skill** to read your own EPUB shelf in place (resolved via `$TOMES_DIR`; nothing is shipped). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and quote the source line you rely on.
-<!-- END TOMES REF v1 -->
+A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and **quote the source line** you rely on: invoke the harness **`harness:bookshelf`** skill (needs `Skill` in this agent's `tools:`), or run `${CLAUDE_PLUGIN_ROOT}/tools/tome.sh` directly. Books are BYO (resolved via `$TOMES_DIR`; nothing is shipped). If the shelf is empty or the book isn't there, say so and fall back to the rails-mcp guides or an explicit \"unverified\" label — never block on it, and never invent a book's contents.
+<!-- END TOMES REF v2 -->
 
 
 

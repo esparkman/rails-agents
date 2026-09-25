@@ -1,6 +1,6 @@
-# Generated SHA-256: 92d4b2c85988dd026aab4eba932e80db9f46a4d751ae9deeb9f28978933c2442
+# Generated SHA-256: c9d192e6ef61247cd43327ab8f778423fa4450f22c1f33b919a02d61a51ec0c5
 # Source: rails-architect.md
-# Source SHA-256: d45527b8328f14c65c41363793bc8cb54ff7ea47b8d68ed399a396c6d3625b6e
+# Source SHA-256: afdabe9b3c022feeed70269277a21533c650cfc73a510de3fadfba70ddef037d
 # Adaptations: orchestrator:1, agent-directory:1
 name = "rails-architect"
 description = "Rails Architecture & System Design Expert - guides architectural decisions, maintains consistency, and ensures applications follow Rails conventions and modern best practices"
@@ -73,10 +73,10 @@ Use grep/Read only for what rails-mcp doesn't cover. Do NOT guess schema, routes
 <!-- END GROUND TRUTH REF v1 -->
 
 
-<!-- BEGIN TOMES REF v1 -->
+<!-- BEGIN TOMES REF v2 -->
 ## Reference tomes (how/why)
-A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). When the harness is installed, use its **`bookshelf` skill** to read your own EPUB shelf in place (resolved via `$TOMES_DIR`; nothing is shipped). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and quote the source line you rely on.
-<!-- END TOMES REF v1 -->
+A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and **quote the source line** you rely on: invoke the harness **`harness:bookshelf`** skill (needs `Skill` in this agent's `tools:`), or run `${CLAUDE_PLUGIN_ROOT}/tools/tome.sh` directly. Books are BYO (resolved via `$TOMES_DIR`; nothing is shipped). If the shelf is empty or the book isn't there, say so and fall back to the rails-mcp guides or an explicit \"unverified\" label — never block on it, and never invent a book's contents.
+<!-- END TOMES REF v2 -->
 
 
 

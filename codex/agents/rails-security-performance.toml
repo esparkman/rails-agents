@@ -1,6 +1,6 @@
-# Generated SHA-256: 95562fd24d77291035b253bb60579916cedcca316c2f04ba95fb1aae40c236da
+# Generated SHA-256: c3c5f83d13318754ea3ce35474572b9c9c0f2517cc05db84e51869da001c0c3f
 # Source: rails-security-performance.md
-# Source SHA-256: e4a918884835d4338e04cdc4ace9e44cb3afdde9a4ff48046c96de7cf2f8ab83
+# Source SHA-256: c69efde031a3133950ab221736b8311bb0f716536dd9377fe323ed8e46de6c7b
 # Adaptations: orchestrator:1, agent-directory:1
 name = "rails-security-performance"
 description = "Rails Security & Performance Expert - specializes in security audits, vulnerability reviews, authorization checks, performance optimization, and query optimization"
@@ -76,10 +76,10 @@ Before inferring the app's structure from files, query the **rails** MCP server 
 Use grep/Read only for what rails-mcp doesn't cover. Do NOT guess schema, routes, or associations from partial file reads.
 <!-- END GROUND TRUTH REF v1 -->
 
-<!-- BEGIN TOMES REF v1 -->
+<!-- BEGIN TOMES REF v2 -->
 ## Reference tomes (how/why)
-A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). When the harness is installed, use its **`bookshelf` skill** to read your own EPUB shelf in place (resolved via `$TOMES_DIR`; nothing is shipped). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and quote the source line you rely on.
-<!-- END TOMES REF v1 -->
+A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and **quote the source line** you rely on: invoke the harness **`harness:bookshelf`** skill (needs `Skill` in this agent's `tools:`), or run `${CLAUDE_PLUGIN_ROOT}/tools/tome.sh` directly. Books are BYO (resolved via `$TOMES_DIR`; nothing is shipped). If the shelf is empty or the book isn't there, say so and fall back to the rails-mcp guides or an explicit \"unverified\" label — never block on it, and never invent a book's contents.
+<!-- END TOMES REF v2 -->
 
 
 
