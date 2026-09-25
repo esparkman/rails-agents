@@ -14,13 +14,14 @@ Use grep/Read only for what rails-mcp doesn't cover. Do NOT guess schema, routes
 
 <!-- BEGIN TOMES REF v1 -->
 ## Reference tomes (how/why)
-A curated Rails/Ruby/PostgreSQL bookshelf is available for idiom & design judgment — NOT this app's facts (rails-mcp owns those). Catalog: `~/Development/rails-agents/reference/tomes/tomes.md`; reader: `~/Development/rails-agents/reference/tomes/tome.sh` (subcommands `find` / `toc` / `search` / `chapter`; the shelf resolves via `$TOMES_DIR` plus standard fallbacks). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant tome and quote the source line you rely on.
+A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). When the harness is installed, use its **`bookshelf` skill** to read your own EPUB shelf in place (resolved via `$TOMES_DIR`; nothing is shipped). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and quote the source line you rely on.
 <!-- END TOMES REF v1 -->
+
 
 
 <!-- BEGIN REVIEW LESSONS REF v1 -->
 ## Review lessons — apply every rule (accumulated from code reviews/audits)
-Read `~/Development/rails-agents/reference/lessons.md` and apply every rule — these are corrections from past reviews and are **not optional**. Current controller-relevant rules:
+Read the bundle's `reference/lessons.md` and apply every rule — these are corrections from past reviews and are **not optional**. Current controller-relevant rules:
 - **Eager-load Active Storage attachments** in index/list actions that render the attachment: `Model.with_attached_<name>`. A bare `.all` / `.order(...)` that renders an attachment is an N+1.
 - **Prefer Rails 8 `params.expect(model: [...])`** over `params.require(:model).permit(...)`.
 - **Add `bullet`** (dev + test, `Bullet.raise = true` in test) so any N+1 fails the suite — a red test beats a remembered rule.

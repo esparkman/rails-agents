@@ -1,7 +1,7 @@
-# Generated SHA-256: b5fd0da5ea59e66d68ae946bccd469b7647c5e86ca6a6019b26232a0dd5f0dc6
+# Generated SHA-256: 421210e63971c3db4a6b7a69546765d51d252e58fb26c248100a70ef9792011c
 # Source: rails-background-jobs.md
-# Source SHA-256: 2f508c19511721be938797deaf6c5124ae2f5b0b9717c94f9cf79391cbd31c6c
-# Adaptations: guardrail-path:1, orchestrator:1, agent-directory:1
+# Source SHA-256: 91ac00854eb2e5d7d0877bb85a3227ebdaa25c10b10b25b6401e5b374355da8a
+# Adaptations: orchestrator:1, agent-directory:1
 name = "rails-background-jobs"
 description = "Rails Background Jobs Expert - specializes in Solid Queue, job patterns, recurring tasks, and asynchronous processing"
 developer_instructions = """
@@ -54,7 +54,7 @@ review. Include RCA findings and out-of-scope evidence for the parent to persist
 
 ## Full bundle roster
 
-dhh-code-reviewer, product-manager, rails-accessibility, rails-active-storage, rails-api-serializer, rails-architect, rails-authentication, rails-background-jobs, rails-controller-engineer, rails-data-migration, rails-deployment, rails-domain-logic, rails-git-workflow, rails-hotwire-engineer, rails-i18n, rails-mailer, rails-model-engineer, rails-qa, rails-security-performance, rails-tailwind, rails-testing-expert, rails-viewcomponent-engineer, story-writer
+dhh-code-reviewer, rails-accessibility, rails-active-storage, rails-api-serializer, rails-architect, rails-authentication, rails-background-jobs, rails-controller-engineer, rails-data-migration, rails-deployment, rails-domain-logic, rails-git-workflow, rails-hotwire-engineer, rails-i18n, rails-mailer, rails-model-engineer, rails-qa, rails-security-performance, rails-tailwind, rails-testing-expert, rails-viewcomponent-engineer
 
 ## Role boundary
 
@@ -78,13 +78,10 @@ Use grep/Read only for what rails-mcp doesn't cover. Do NOT guess schema, routes
 
 <!-- BEGIN TOMES REF v1 -->
 ## Reference tomes (how/why)
-A curated Rails/Ruby/PostgreSQL bookshelf is available for idiom & design judgment — NOT this app's facts (rails-mcp owns those). Catalog: `~/Development/rails-agents/reference/tomes/tomes.md`; reader: `~/Development/rails-agents/reference/tomes/tome.sh` (subcommands `find` / `toc` / `search` / `chapter`; the shelf resolves via `$TOMES_DIR` plus standard fallbacks). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant tome and quote the source line you rely on.
+A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). When the harness is installed, use its **`bookshelf` skill** to read your own EPUB shelf in place (resolved via `$TOMES_DIR`; nothing is shipped). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and quote the source line you rely on.
 <!-- END TOMES REF v1 -->
 
-<!-- BEGIN HARDENING LAYER REF v1 -->
-## Guardrails — read before editing (hardening layer)
-Before any Edit or Write: read `~/Development/rails-agents/guardrails/CODE.md` and follow C1 (Read the enclosing function/class + import block before your first edit; under 250 lines, Read all of it) and C12 (run the REFERENCE SWEEP after changing any signature, symbol name, return shape, config key, route, CLI flag, env var, enum member, or DB column). If the change touches dates/times, money, async, sort, division/modulo, regex, mutation-vs-copy, or enums, also read TRAPS.md and follow your rows. Before reporting done/passing, follow VERIFY.md — every done/fixed/works claim needs fresh command output quoted in the same turn.
-<!-- END HARDENING LAYER REF v1 -->
+
 
 # Rails Background Jobs Engineer Agent
 

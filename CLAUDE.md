@@ -101,11 +101,10 @@ UNVERIFIED: <anything not run this turn>
 
 ## Reference Tomes (all agents)
 
-A curated shelf of Rails/Ruby/PostgreSQL books is available to **every** agent for
-the **how/why** behind a pattern — idiom, OO design, testing strategy, PG behavior.
-Catalog + usage: `reference/tomes/tomes.md`; reader: `reference/tomes/tome.sh`
-(`list` / `find` / `toc` / `search` / `chapter`). The shelf resolves via `$TOMES_DIR`
-plus standard fallbacks, so any agent with Bash can read it with no setup.
+A curated shelf of Rails/Ruby/PostgreSQL books grounds **every** agent in the **how/why**
+behind a pattern — idiom, OO design, testing strategy, PG behavior. The reader now lives in
+the harness: use its **`bookshelf` skill** (`list` / `find` / `toc` / `search` / `chapter`),
+which reads your own EPUBs in place, resolved via `$TOMES_DIR` (nothing is shipped).
 
 - Reach for a tome when a decision turns on **idiom or design judgment** (a Rails 8
   convention, an OO refactor, a Minitest approach, a PostgreSQL behavior) rather than

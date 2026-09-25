@@ -14,12 +14,10 @@ Use grep/Read only for what rails-mcp doesn't cover. Do NOT guess schema, routes
 
 
 <!-- BEGIN TOMES REF v1 -->
-## Tomes — accumulated wisdom (complements rails-mcp)
-For established patterns/insights beyond the live app, consult the bookshelf via
-`~/Development/rails-agents/reference/tomes/tome.sh` (topic→book map: the vault's [[tomes]] catalog — e.g. The Rails 8 Way, Sustainable Web Development, Layered Design, High Performance PostgreSQL for Rails).
-Use `tome.sh search <book> <regex>` / `chapter <book> <toc-text>`; quote the source line you rely on.
-rails-mcp remains the authority for THIS app's schema/routes/models; tomes are for the "how/why".
+## Reference tomes (how/why)
+A curated Rails/Ruby/PostgreSQL bookshelf grounds idiom & design judgment — NOT this app's facts (rails-mcp owns those). When the harness is installed, use its **`bookshelf` skill** to read your own EPUB shelf in place (resolved via `$TOMES_DIR`; nothing is shipped). Before asserting a Rails 8 convention, an OO/refactor call, a Minitest approach, or a PostgreSQL behavior, consult the relevant book and quote the source line you rely on.
 <!-- END TOMES REF v1 -->
+
 
 
 
