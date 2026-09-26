@@ -5,24 +5,25 @@ model: opus
 tools: Read,Glob,Grep,Bash, mcp__rails__*, mcp__fizzy__*, Skill
 ---
 
-<!-- BEGIN GROUND TRUTH REF v2 -->
+<!-- BEGIN GROUND TRUTH REF v3 -->
 ## Ground truth: live introspection, never partial reads
 Structural facts about THIS app — schema (tables/columns/indexes), routes, and model
 associations/validations — MUST come from live introspection of the running app, never inferred from
 grep or partial file reads. Two authoritative sources, in order of preference:
-1. **`bin/rails runner` via Bash** — the reliable path in a subagent (no MCP dependency; works whenever
-   Bash does). It queries the loaded models and the real DB — the same truth the rails MCP server wraps.
-   Examples: `bin/rails runner 'pp Model.reflect_on_all_associations.map(&:name)'`,
+1. **The `rails` MCP server (`mcp__rails__*`) — prefer it when available.** Its tools are DEFERRED in a
+   subagent, so load them first with `ToolSearch('select:mcp__rails__search_tools,mcp__rails__execute_tool,mcp__rails__switch_project')`,
+   then (when multiple projects are configured) `switch_project`, and query via `execute_tool` — `get_schema`,
+   `get_routes`, `analyze_models`, `get_model`/`get_file`/`list_files`. It returns the same DB/model truth,
+   structured. If the tools won't load or a call fails, fall back to #2 (never depend on it being present).
+2. **`bin/rails runner` via Bash — the always-available fallback** (no MCP dependency; works whenever Bash
+   does). Use it whenever rails-mcp is absent, its tools won't load, or a call fails. It queries the loaded
+   models and the real DB. Examples: `bin/rails runner 'pp Model.reflect_on_all_associations.map(&:name)'`,
    `bin/rails runner 'pp Model.columns_hash.transform_values(&:sql_type)'`,
    `bin/rails runner 'pp ActiveRecord::Base.connection.indexes(:table).map(&:columns)'`,
    `bin/rails runner 'pp Model.validators.map(&:class)'`, `bin/rails runner 'pp Rails.application.routes.routes.size'`.
-2. **The `rails` MCP server (`mcp__rails__*`)** when its tools are actually present — `get_schema`,
-   `get_routes`, `analyze_models`, `get_model`/`get_file`/`list_files`. Prefer it when available, but it
-   can be absent or unreliable in a freshly spawned subagent, so NEVER depend on it — fall back to
-   `bin/rails runner`.
 Use grep/Read only for what neither source covers. Do NOT assert schema, routes, or associations from
 partial file reads — state the introspection command you ran as evidence for any structural claim.
-<!-- END GROUND TRUTH REF v2 -->
+<!-- END GROUND TRUTH REF v3 -->
 
 
 <!-- BEGIN TOMES REF v2 -->
